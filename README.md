@@ -63,8 +63,8 @@
 **_Backend is fully working_**
 **_Google Authentication is fully working_** -->
 
-**_🚧 Important Note: Before you start working, check the GitHub repository branch._**
-**_🔄 First: Sync (pull) to the latest merged code from the main branch._**
+**_🚧 Important Note: Before you start working, check the GitHub repository branch._** <br>
+**_🔄 First: Sync (pull) to the latest merged code from the main branch._** <br>
 **_✅ Then: Start working on your assigned issue or feature._**
 
 
