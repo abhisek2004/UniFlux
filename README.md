@@ -4,10 +4,10 @@
 
 <img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="100%">
 
-AI-Powered Smart University Management &amp; Timetable Optimization Platform
+## 🌐 **AI-Powered Smart University Management & Timetable Optimization Platform**
 
 <div align="center">
-  <img width="200" height="200" alt="image" src="https://github.com/user-attachments/assets/74b9fbd2-9165-4b99-90c8-439544690525" /><br><br>
+  <img width="100" height="100" alt="image" src="https://github.com/user-attachments/assets/74b9fbd2-9165-4b99-90c8-439544690525" /><br><br>
   <p align="center">
     <b>🎉 This project is now OFFICIALLY accepted for ECWOC 2026</b>
     <br><br>
@@ -18,20 +18,35 @@ AI-Powered Smart University Management &amp; Timetable Optimization Platform
   </p>
 </div>
 
+<img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="100%">
 
+<div align="center">
+  <img width="200" height="200" alt="UniFlux Logo" src="https://github.com/user-attachments/assets/92977b6d-323d-44d9-b1ed-51dc077a5c0e" />
+  <br><br>
 
+  <h3>🧠 What is UniFlux?</h3>
 
+  <p>
+    <strong>UniFlux</strong> is a <strong>modern, AI-assisted, open-source web platform</strong> built to 
+    <strong>digitally manage, automate, and optimize university academic operations</strong>.
+  </p>
 
+  <p>
+    The platform focuses on <strong>intelligent timetable generation</strong>, 
+    <strong>faculty workload balancing</strong>, and 
+    <strong>centralized academic management</strong>—designed specifically for 
+    <strong>multi-department, multi-branch universities</strong>.
+  </p>
 
+  <p>
+    UniFlux replaces <strong>manual scheduling, spreadsheets, and fragmented tools</strong> with a 
+    <strong>single unified intelligent system</strong> that is 
+    <strong>fast, flexible, scalable</strong>, and fully 
+    <strong>aligned with NEP 2020 requirements</strong> 🚀🎓
+  </p>
+</div>
 
-
-
-
-
-
-
-
-
+<img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="100%">
 
 
 
