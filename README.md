@@ -194,14 +194,83 @@ Let’s build the future, one meaningful commit at a time ❄💻🚀
 
 > ⚠️⚠️ **📢 IMPORTANT NOTICE — PLEASE READ CAREFULLY BEFORE CONTRIBUTING!** ⚠️⚠️  
 
+<details>
+  <summary>📘 Click to Read More </summary>
 
+## ✅ **Current Project Status (UniFlux)**
 
+* 🧱 **Project initialized from scratch** with a clean and scalable structure
+* 🔐 **Role-based authentication flow planned** (Admin / Department / Faculty)
+* 🎨 **Modern UI foundation** using TypeScript & Tailwind CSS
+* 🔗 **Clear separation of modules** for easy contribution and scaling
 
+> 🚧 The project is in **active development**. Core features will be built step-by-step through open-source contributions.
 
+---
 
+## ⚠️ **Important Guidelines for Contributors**
 
+### 🔐 **Before You Start**
 
+➡️ Please **read the complete `README.md` carefully** before picking an issue.
+➡️ Understand the **project vision, roadmap, and coding standards**.
 
+### 🚫 **Code Safety Rules**
+
+* ❌ Do **not modify or delete existing core code** without discussion
+* ❌ Avoid unrelated refactors in your PR
+* ❗ PRs that change core logic **without valid justification will not be merged**
+
+---
+
+## 🧭 **How to Contribute Successfully**
+
+* 📌 Pick an issue that matches your skill level
+* 💬 Ask questions in the issue or discussion if unsure
+* 🧪 Test your changes before submitting a PR
+* 📝 Write clear commit messages and PR descriptions
+
+This helps:
+
+* 🚀 Faster PR reviews
+* 🔁 Fewer merge conflicts
+* 🤝 Better collaboration
+
+---
+
+## 🚨 **Attention Contributors!**
+
+📖 Please make sure you understand:
+
+* 🏛️ What **UniFlux** aims to build
+* 🧠 How the **Smart Timetable & University Management system** works
+* 🔐 Basic **security & best practices**
+* 🤝 Contribution workflow and expectations
+
+🔁 This ensures your contribution fits perfectly into the project vision.
+
+---
+
+## 🎯 **Vision**
+
+To build an **open-source, AI-powered university management platform** that simplifies academic operations, enables smart timetable optimization, balances faculty workload, and supports multidisciplinary education under NEP 2020 — all through a **modern, scalable, and contributor-friendly system**.
+
+---
+
+## 💖 **Community Note**
+
+Let’s build **UniFlux** together —
+🎓 smarter universities
+⚡ efficient academic systems
+🌍 and a welcoming open-source community for everyone.
+
+</details>
+
+<details>
+  <summary>📘 Click to Read More </summary>
+
+  
+</details>
 
 
 
