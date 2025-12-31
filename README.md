@@ -96,7 +96,7 @@
 <img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="100%">
 
 
-<h3 align="center">📊 Project Insights</h3>
+<h3 📊 Project Insights</h3>
 
 <table align="center">
   <thead align="center">
@@ -150,6 +150,45 @@
 </table>
 
 <hr>
+
+<img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="150%">
+
+<h2 align="center">🎯 Open Source Programmes ⭐</h2>
+
+🌟 **Big Announcement Ahead!**
+
+### 🏆 Elite Coders Winter of Code (ECWOC 2026)
+
+We’re excited to open the doors to a global community of innovators, learners, and builders for **Elite Coders Winter of Code (ECWOC 2026)** — a flagship open-source initiative focused on **real-world impact, skill acceleration, and collaborative growth** 🚀🌍
+
+ECWOC 2026 brings together **students, developers, designers, and tech enthusiasts** from across India and beyond to work on **production-ready open-source projects**, guided by experienced mentors and driven by a strong culture of learning and contribution 💻✨
+
+This program is designed to go beyond tutorials and theory. Here, contributors gain **hands-on experience**, work on **meaningful problem statements**, and understand how real software is designed, built, reviewed, and shipped in collaborative environments 🧠⚙️
+
+💡 **Why ECWOC 2026?**
+Because this is where **code meets purpose**. Participants don’t just write code—they:
+
+* Build scalable, industry-relevant solutions
+* Learn best practices in version control, documentation, and clean architecture
+* Collaborate in diverse teams across domains and skill levels
+* Grow through mentorship, reviews, and continuous feedback
+
+🌈 **What contributors gain**
+✨ Exposure to modern tech stacks (Web, AI/ML, Cloud, DevOps & more)
+🤝 Open-source collaboration experience on real projects
+🧠 Strong foundations in teamwork, leadership, and problem-solving
+🎯 Participation in structured milestones, sprints, and reviews
+🏆 Recognition, certificates, and program credentials
+🌍 Networking with peers, mentors, and open-source leaders
+
+🌍 **Elite Coders Winter of Code is more than a seasonal program.**
+It’s a community-driven movement that nurtures talent, encourages knowledge sharing, and empowers contributors to create technology that matters 💫
+
+🎉 Whether you’re taking your **first step into open source** or looking to **mentor and lead**, ECWOC 2026 offers a space to learn, contribute, and grow together.
+
+❤️ We’re excited to welcome you to **Elite Coders Winter of Code 2026** —
+where curiosity turns into contribution, and contribution turns into impact.
+Let’s build the future, one meaningful commit at a time ❄💻🚀
 
 
 
