@@ -771,19 +771,23 @@ Date: 06/07/2025   Principal Sign: ____
 
 UniFlux follows a **clean, scalable frontend–backend architecture** designed for real-world university systems.
 
+---
+
 ```mermaid
 flowchart LR
-    A[👤 Users<br/>(Admin / Dept / Faculty)]
-    B[🎨 Frontend<br/>TypeScript + Tailwind]
-    C[⚙️ Backend API<br/>Node.js + Express]
-    D[🗄️ Database<br/>MongoDB Atlas]
+    A[Users: Admin, Department, Faculty]
+    B[Frontend: TypeScript & Tailwind CSS]
+    C[Backend API: Node.js & Express]
+    D[Database: MongoDB Atlas]
 
     A --> B
     B -->|REST API Requests| C
     C -->|CRUD Operations| D
-    D -->|Data Response| C
-    C -->|JSON Response| B
+    D -->|Query Results| C
+    C -->|JSON Responses| B
 ```
+
+---
 
 ### 🧩 Architecture Highlights
 
@@ -899,36 +903,69 @@ flowchart TD
 | 🔐 Security Engineer     | JWT auth flow, role permissions, API protection, validation |
 | 🎨 UX / UI Designer      | User flows, accessibility, clean academic-focused UI/UX |
 | 🧪 QA Tester             | Feature testing, edge-case validation, bug reporting |
-| 📚 Documentation Lead    | README, INSTALL, FAQ, architecture & contributor guides |
-| 📣 Community Lead        | Issue management, PR reviews, contributor onboarding & outreach |
 
 <img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="100%">
 
+### 🙌 **Thank You, Contributors!**
 
+> Thank you once again to all our contributors! Your efforts are truly appreciated. 💖👏
 
+<p align="center">
+  <a href="https://github.com/abhisek2004/Dev-Elevate/graphs/contributors">
+   <img  src="https://api.vaunt.dev/v1/github/entities/abhisek2004/repositories/UniFlux/contributors?format=svg&limit=54" width="700" height="250" />
+  </a>
+</p>
 
+<img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="100%">
 
+## 🧩 Contributions
 
+![Alt](https://repobeats.axiom.co/api/embed/5da32642964d51b3eb4ddc62fa313731082f0b27.svg "Repobeats analytics image")
 
+<img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="100%">
 
+### ⭐ Stargazers
 
+<div align="center">
+  <a href="https://github.com/abhisek2004/UniFlux/stargazers">
+    <img 
+      src="https://reporoster.com/stars/abhisek2004/UniFlux?type=svg&limit=100&names=false" 
+      alt="Stargazers" 
+    />
+  </a>
+</div>
 
+---
 
+### 🍴 Forkers
 
+<div align="center">
+  <a href="https://github.com/abhisek2004/UniFlux/network/members">
+    <img 
+      src="https://reporoster.com/forks/abhisek2004/UniFlux?type=svg&limit=100&names=false" 
+      alt="Forkers" 
+    />
+  </a>
+</div>
 
+<img 
+src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" 
+width="100%" 
+/>
 
+<img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="100%">
 
+## 🌐 Connect with Me
 
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/a92d4e36-c38a-4af2-bbfa-aae37e35ccbf" alt="Abhisek Panda_DSC0019" height="200"/>
+</p>
 
+- 👨‍💻 **Website Creator:** [Abhisek Panda](https://abhisekpanda072.vercel.app)
+- 🐙 **GitHub:** [abhisek2004](https://github.com/abhisek2004)
+- 💼 **LinkedIn:** [abhisekpanda2004](https://www.linkedin.com/in/abhisekpanda2004/)
 
-
-
-
-
-
-
-
-<img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="150%">
+<img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="100%">
 
 <div align="center">
   <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&weight=600&size=24&duration=3000&pause=1000&color=00C853&center=true&vCenter=true&width=700&lines=Thanks+for+visiting+DevElevate!+🙌;Start+the+repo+✅;Share+it+with+others+🌍;Contribute+and+grow+🛠️;Happy+Coding+✨!" alt="Thanks Banner Typing SVG" />
@@ -940,10 +977,10 @@ flowchart TD
 
 <div align="center">
 
-<h3>👨‍💻 Built with ❤️ by the Dev Elevate Team</h3>
+<h3>👨‍💻 Built with ❤️ by the UniFlux Team</h3>
 
-<a href="https://github.com/abhisek2004/Dev-Elevate/issues">Open an Issue</a> | 
-<a href="https://youtu.be/zCUTFe8gQEA?si=bS5lkWOxnIuJMXst">Watch Demo</a> | 
+<a href="https://github.com/abhisek2004/UniFlux/issues">Open an Issue</a> | 
+<!-- <a href="https://youtu.be/zCUTFe8gQEA?si=bS5lkWOxnIuJMXst">Watch Demo</a> |  -->
 <a href="https://develevate-ai.vercel.app">Live</a>
 
 </div>
@@ -961,7 +998,3 @@ flowchart TD
 <p align="center">
   <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&height=65&section=footer"/>
 </p>
-
-<img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="100%">
-<img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="100%">
-<img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="100%">
