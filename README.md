@@ -731,104 +731,202 @@ Date: 06/07/2025   Principal Sign: ____
 </details>
 
 
+<img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="100%">
 
+### 🔒 _Strict Contribution Guidelines (Must Follow):_
 
+❗ YOU ARE *NOT ALLOWED TO:
 
+🔴 ❌ You are NOT allowed to change or update any existing backend files or original code.
 
+🔴 ❌ You are NOT allowed to update or modify any existing routes or their logic in any form.
 
+🔴 ❌ You are NOT allowed to change the project structure or delete/edit core files without permission.
 
+🔴 ❌ You are NOT allowed to add or push any .env, .env.local, or sensitive environment files to the frontend OR backend.
 
+<img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="100%">
 
+## 🔧 Tech Stack
 
+| Layer            | Tech Used |
+|------------------|-----------|
+| Frontend         | TypeScript, JavaScript (ES6+), Tailwind CSS, Vite |
+| Backend          | JavaScript |
+| Database         | MongoDB Atlas |
+| Authentication  | JWT (Role-based access control) |
+| Optimization    | Rule-based scheduling & constraint logic |
+| Analytics       | Chart.js / JS-based visualization |
+| APIs             | Custom REST APIs |
+| Tooling         | Git, GitHub, VS Code |
+| Hosting          | Vercel (Frontend), Render (Backend) |
 
 
+<img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="100%">
 
+<details>
+  <summary>📘 Click to Read More </summary>
 
+# 📐 Architecture Diagram
 
+UniFlux follows a **clean, scalable frontend–backend architecture** designed for real-world university systems.
 
+```mermaid
+flowchart LR
+    A[👤 Users<br/>(Admin / Dept / Faculty)]
+    B[🎨 Frontend<br/>TypeScript + Tailwind]
+    C[⚙️ Backend API<br/>Node.js + Express]
+    D[🗄️ Database<br/>MongoDB Atlas]
 
+    A --> B
+    B -->|REST API Requests| C
+    C -->|CRUD Operations| D
+    D -->|Data Response| C
+    C -->|JSON Response| B
+```
 
+### 🧩 Architecture Highlights
 
+* Clear **separation of concerns**
+* Secure **role-based access**
+* Scalable for **multi-department universities**
+* Open-source friendly structure
 
+---
 
+# 🔄 Data Flow Chart
 
+This shows how data moves through UniFlux during a **typical authenticated workflow**.
 
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant F as Frontend
+    participant B as Backend
+    participant D as Database
 
+    U->>F: Login / Request Data
+    F->>B: API Request (with credentials/token)
+    B->>D: Fetch / Store Academic Data
+    D-->>B: Data Response
+    B-->>F: Authorized JSON Response
+    F-->>U: UI Update (Dashboard / Timetable)
+```
 
+### 📌 Key Flow Principles
 
+* Frontend never accesses database directly
+* Backend enforces **authorization & validation**
+* All sensitive logic stays on the server
 
+---
 
+# 📦 Module-Wise Tech Mapping
 
+| Module             | Responsibility                   | Tech Used                |
+| ------------------ | -------------------------------- | ------------------------ |
+| Authentication     | Login, roles, protected routes   | JWT, Express Middleware  |
+| User Management    | Admin, Dept Admin, Faculty roles | Node.js, MongoDB         |
+| Timetable Input    | Subjects, faculty, rooms, slots  | TypeScript, Tailwind     |
+| Timetable Engine   | Schedule generation & checks     | Rule-based JS logic      |
+| Conflict Detection | Clash identification             | Backend validation logic |
+| Rearrangement      | Alternate slot suggestions       | Constraint logic         |
+| Dashboards         | Workload & utilization views     | Chart.js / JS Charts     |
+| Result Management  | SGPA / CGPA processing           | Backend logic            |
+| API Layer          | Data exchange                    | REST APIs                |
+| Deployment         | Hosting & CI                     | Vercel, Render           |
 
+---
 
+# 🧠 Optimization Logic Explanation
 
+UniFlux uses a **rule-based optimization approach** (easy to understand, extend, and open-source friendly).
 
+### 🎯 Core Constraints Considered
 
+* Faculty availability
+* Classroom & lab capacity
+* Subject credit requirements
+* Max classes per day/week
+* Fixed slots (labs, seminars)
+* Multi-department overlaps
 
+---
 
+### ⚙️ Optimization Workflow
 
+```mermaid
+flowchart TD
+    A[Collect Input Data] --> B[Apply Fixed Constraints]
+    B --> C[Check Faculty Availability]
+    C --> D[Check Room Availability]
+    D --> E[Detect Conflicts]
+    E -->|No Conflicts| F[Generate Timetable]
+    E -->|Conflicts Found| G[Suggest Alternate Slots]
+    G --> F
+```
 
+---
 
+### ✅ Why Rule-Based (Instead of Heavy AI)?
 
+* Transparent & explainable logic
+* Easier for contributors to understand
+* Faster to debug
+* Can later be upgraded to AI/ML models
 
+---
 
+### 🔮 Future Enhancement Path
 
+* AI-assisted preference learning
+* Predictive faculty availability
+* Optimization scoring system
+* Genetic / heuristic algorithms
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+</details>
 
 <img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="150%">
+
+## 🧑‍🤝‍🧑 Open Source Roles (UniFlux)
+
+| Role                     | Responsibility |
+|--------------------------|----------------|
+| 🎨 Frontend Lead         | Build responsive dashboards, timetable UI, result views using TypeScript & Tailwind CSS |
+| 🖥️ Backend Lead          | Design REST APIs, authentication, role-based access, and academic data handling |
+| 🧠 Optimization Engineer | Implement timetable rules, clash detection, workload balancing, rearrangement logic |
+| 📊 Analytics Engineer    | Faculty workload, classroom utilization, result analytics & charts |
+| 🔐 Security Engineer     | JWT auth flow, role permissions, API protection, validation |
+| 🎨 UX / UI Designer      | User flows, accessibility, clean academic-focused UI/UX |
+| 🧪 QA Tester             | Feature testing, edge-case validation, bug reporting |
+| 📚 Documentation Lead    | README, INSTALL, FAQ, architecture & contributor guides |
+| 📣 Community Lead        | Issue management, PR reviews, contributor onboarding & outreach |
+
+<img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="100%">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 <img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="150%">
 
