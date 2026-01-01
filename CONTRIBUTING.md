@@ -29,60 +29,90 @@ Here’s what you can contribute to:
 
 ---
 
-## 🚀 Quick Start — Step-by-Step Guide
+## 🚀 Quick Start — Step-by-Step Guide (UniFlux)
 
 ### 1. 🌟 Star the Repository
+Show your support by starring ⭐ the repo — it helps the project grow!
 
-Show your support by starring ⭐ the repo. It motivates contributors!
+---
 
 ### 2. 🍴 Fork the Repository
+Click the **Fork** button in the top-right corner of this repository.
 
-Click on the **Fork** button in the top-right corner of this repository.
+---
 
 ### 3. 📥 Clone Your Fork
-
 ```bash
-git clone https://github.com/<your-username>/Dev-Elevate.git
-cd Dev-Elevate
-````
+git clone https://github.com/<your-username>/UniFlux.git
+cd UniFlux
+
+---
 
 ### 4. 📦 Install Dependencies
 
-The project consists of two parts — **Client (Frontend)** and **Server (Backend)**.
+UniFlux has two parts — **Frontend** and **Backend**.
 
-**Frontend Setup (React + Vite):**
+#### 🖥️ Frontend Setup (TypeScript + Vite + Tailwind)
 
 ```bash
-cd DevElevate/Client
+cd frontend
 npm install
 ```
 
-**Backend Setup (Node.js + Express):**
+#### ⚙️ Backend Setup (Node.js + Express)
 
 ```bash
-cd DevElevate/Server
+cd ../backend
 npm install
 ```
 
 ---
 
-### 5. ⚙️ Run in Development Mode
+### 5. ⚙️ Configure Environment Variables
 
-Run both client and server in separate terminals.
-
-**Backend:**
+#### Frontend
 
 ```bash
-cd DevElevate/Server
-node index.js
+cd frontend
+cp .env.example .env
 ```
 
-**Frontend:**
+#### Backend
 
 ```bash
-cd DevElevate/Client
+cd ../backend
+cp .env.example .env
+```
+
+> Fill in required values (PORT, DB URL, secrets) before running.
+
+---
+
+### 6. ▶️ Run in Development Mode
+
+Open **two terminals**.
+
+#### 🧠 Start Backend
+
+```bash
+cd backend
 npm run dev
 ```
+
+Backend runs at: `http://localhost:5000`
+
+#### 🎨 Start Frontend
+
+```bash
+cd frontend
+npm run dev
+```
+
+Frontend runs at: `http://localhost:5173`
+
+---
+
+### 7. ✅ You’re Ready!
 
 💡 The app usually runs at:
 
@@ -171,7 +201,7 @@ git push origin main
 
 ## 🧠 Issue Reporting Guide
 
-1. Visit [Issues](https://github.com/abhisek2004/Dev-Elevate/issues)
+1. Visit [Issues](https://github.com/abhisek2004/UniFlux/issues)
 2. Check if the issue already exists
 3. Use clear titles & descriptions
 4. Add labels (`bug`, `feature`, `good first issue`)
