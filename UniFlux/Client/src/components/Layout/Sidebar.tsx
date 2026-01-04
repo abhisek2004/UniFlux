@@ -1,19 +1,20 @@
 import React from 'react';
 import { useApp } from '../../context/AppContext';
-import { 
-  Home, 
-  Users, 
-  GraduationCap, 
-  BookOpen, 
-  Calendar, 
-  ClipboardCheck, 
-  FileText, 
-  MessageSquare, 
+import {
+  Home,
+  Users,
+  GraduationCap,
+  BookOpen,
+  Calendar,
+  ClipboardCheck,
+  FileText,
+  MessageSquare,
   Settings,
   BarChart3,
   UserCheck,
   Award,
-  Bell
+  Bell,
+  MessageCircle
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -37,10 +38,11 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isOpen, onNa
     { id: 'reports', label: 'Reports', icon: BarChart3, roles: ['superadmin', 'hod', 'teacher'], route: '/reports' },
     { id: 'grievances', label: 'Grievances', icon: MessageSquare, roles: ['superadmin', 'hod', 'student'], route: '/grievances' },
     { id: 'notices', label: 'Notices', icon: Bell, roles: ['superadmin', 'hod', 'teacher', 'student'], route: '/notices' },
+    { id: 'user-feedback', label: 'User Feedback', icon: MessageCircle, roles: ['superadmin', 'hod', 'teacher', 'student'], route: '/feedback' },
     { id: 'settings', label: 'Settings', icon: Settings, roles: ['superadmin', 'hod'], route: '/settings' }
   ];
 
-  const filteredMenuItems = menuItems.filter(item => 
+  const filteredMenuItems = menuItems.filter(item =>
     item.roles.includes(currentUser?.role || '')
   );
 
@@ -73,16 +75,15 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isOpen, onNa
                   }}
                   className={`
                     group flex items-center px-2 py-2 text-sm font-medium rounded-md w-full transition-colors
-                    ${isActive 
-                      ? 'bg-primary-100 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300' 
+                    ${isActive
+                      ? 'bg-primary-100 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300'
                       : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white'
                     }
                   `}
                 >
                   <Icon
-                    className={`mr-3 flex-shrink-0 h-5 w-5 ${
-                      isActive ? 'text-primary-500' : 'text-gray-400 group-hover:text-gray-500'
-                    }`}
+                    className={`mr-3 flex-shrink-0 h-5 w-5 ${isActive ? 'text-primary-500' : 'text-gray-400 group-hover:text-gray-500'
+                      }`}
                   />
                   {item.label}
                 </button>
@@ -90,7 +91,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isOpen, onNa
             })}
           </nav>
         </div>
-        
+
         <div className="flex-shrink-0 flex border-t border-gray-200 dark:border-gray-700 p-4">
           <div className="flex items-center w-full">
             <div className="h-10 w-10 bg-primary-500 rounded-full flex items-center justify-center">

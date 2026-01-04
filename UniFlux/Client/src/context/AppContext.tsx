@@ -1,13 +1,13 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { User, Student, Teacher, Subject, AttendanceRecord, Marks, Grievance, Notice } from '../types';
-import { 
-  sampleStudents, 
-  sampleTeachers, 
-  sampleSubjects, 
-  generateSampleAttendance, 
+import {
+  sampleStudents,
+  sampleTeachers,
+  sampleSubjects,
+  generateSampleAttendance,
   generateSampleMarks,
   sampleGrievances,
-  sampleNotices 
+  sampleNotices
 } from '../data/sampleData';
 
 interface AppContextType {
@@ -15,7 +15,7 @@ interface AppContextType {
   currentUser: User | null;
   login: (email: string, password: string) => boolean;
   logout: () => void;
-  
+
   // Data
   students: Student[];
   teachers: Teacher[];
@@ -24,7 +24,7 @@ interface AppContextType {
   marks: Marks[];
   grievances: Grievance[];
   notices: Notice[];
-  
+
   // Actions
   addStudent: (student: Omit<Student, 'id'>) => void;
   updateStudent: (id: string, student: Partial<Student>) => void;
@@ -37,7 +37,7 @@ interface AppContextType {
   addGrievance: (grievance: Omit<Grievance, 'id' | 'createdAt'>) => void;
   updateGrievance: (id: string, updates: Partial<Grievance>) => void;
   addNotice: (notice: Omit<Notice, 'id' | 'createdAt'>) => void;
-  
+
   // UI
   darkMode: boolean;
   toggleDarkMode: () => void;
@@ -57,21 +57,21 @@ export const useApp = () => {
 const sampleUsers: User[] = [
   { id: 'admin', name: 'Super Admin', email: 'superadmin@campuscore.in', role: 'superadmin' },
   { id: 'hod1', name: 'Dr. Rajesh Kumar', email: 'hod.cse@campuscore.in', role: 'hod', department: 'CSE' },
-  ...sampleTeachers.map(teacher => ({ 
-    id: teacher.id, 
-    name: teacher.name, 
-    email: teacher.email, 
+  ...sampleTeachers.map(teacher => ({
+    id: teacher.id,
+    name: teacher.name,
+    email: teacher.email,
     role: 'teacher' as const,
-    department: teacher.department 
+    department: teacher.department
   })),
-  ...sampleStudents.map(student => ({ 
-    id: student.id, 
-    name: student.name, 
-    email: student.email, 
+  ...sampleStudents.map(student => ({
+    id: student.id,
+    name: student.name,
+    email: student.email,
     role: 'student' as const,
     rollNumber: student.rollNumber,
     semester: student.semester,
-    department: student.department 
+    department: student.department
   }))
 ];
 
@@ -90,13 +90,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     // Initialize sample data
     setAttendance(generateSampleAttendance());
     setMarks(generateSampleMarks());
-    
+
     // Check for saved user
     const savedUser = localStorage.getItem('campuscore_user');
     if (savedUser) {
       setCurrentUser(JSON.parse(savedUser));
     }
-    
+
     // Check for dark mode preference
     const savedTheme = localStorage.getItem('campuscore_theme');
     if (savedTheme === 'dark') {
@@ -161,7 +161,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const markAttendance = (studentId: string, subjectId: string, date: string, status: 'present' | 'absent') => {
     const id = `${studentId}-${subjectId}-${date}`;
     const existingRecord = attendance.find(a => a.id === id);
-    
+
     if (existingRecord) {
       setAttendance(prev => prev.map(a => a.id === id ? { ...a, status } : a));
     } else {
@@ -190,10 +190,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     const id = `${studentId}-${subjectId}`;
     const existingMark = marks.find(m => m.id === id);
-    
+
     if (existingMark) {
-      setMarks(prev => prev.map(m => 
-        m.id === id 
+      setMarks(prev => prev.map(m =>
+        m.id === id
           ? { ...m, internalMarks: internal, externalMarks: external, totalMarks: total, grade }
           : m
       ));
