@@ -53,7 +53,7 @@ function App() {
         <Route path="/accessibility" element={<Accessibility />} />
         <Route path="/creator-info" element={<CreatorInfo />} />
         <Route path="/quick-links" element={<QuickLinks />} />
-        
+
         {/* Quick Links Pages - Accessible without login but with main layout */}
         <Route path="/academic-calendar" element={<MainAppWithPage page="academic-calendar" />} />
         <Route path="/admissions" element={<MainAppWithPage page="admissions" />} />
@@ -61,7 +61,7 @@ function App() {
         <Route path="/faculty-directory" element={<MainAppWithPage page="faculty-directory" />} />
         <Route path="/library" element={<MainAppWithPage page="library" />} />
         <Route path="/career-services" element={<MainAppWithPage page="career-services" />} />
-        
+
         {/* Main App Route */}
         <Route path="/*" element={currentUser ? <MainApp /> : <LoginForm />} />
       </Routes>
@@ -73,6 +73,8 @@ const MainApp: React.FC = () => {
   const { currentUser } = useApp();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
 
   const renderContent = () => {
     switch (activeTab) {
@@ -134,21 +136,30 @@ const MainApp: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex">
       {/* Sidebar */}
-      <Sidebar 
-        activeTab={activeTab} 
-        setActiveTab={setActiveTab} 
+      <Sidebar
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
         isOpen={sidebarOpen}
+        isCollapsed={sidebarCollapsed}
+        onClose={() => setSidebarOpen(false)}
       />
+
+
       {/* Sidebar Overlay */}
       {sidebarOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-gray-600 bg-opacity-50 z-40 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
       {/* Main Content */}
-      <div className="flex-1 flex flex-col lg:ml-0">
-        <Header onMenuClick={() => setSidebarOpen(!sidebarOpen)} />
+      <div className={`flex-1 flex flex-col transition-all duration-300 ${sidebarCollapsed ? 'lg:ml-0' : 'lg:ml-0'}`}>
+        <Header
+          onMenuClick={() => setSidebarOpen(!sidebarOpen)}
+          onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
+          isSidebarCollapsed={sidebarCollapsed}
+        />
+
         <main className="flex-1 p-6">
           <div className="max-w-7xl mx-auto">
             {renderContent()}
@@ -164,7 +175,9 @@ const MainApp: React.FC = () => {
 const MainAppWithPage: React.FC<{ page: string }> = ({ page }) => {
   const { currentUser } = useApp();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const navigate = useNavigate();
+
 
   const renderContent = () => {
     switch (page) {
@@ -192,22 +205,31 @@ const MainAppWithPage: React.FC<{ page: string }> = ({ page }) => {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex">
       {/* Sidebar */}
-      <Sidebar 
-        activeTab={page} 
-        setActiveTab={() => {}} 
+      <Sidebar
+        activeTab={page}
+        setActiveTab={() => { }}
         isOpen={sidebarOpen}
+        isCollapsed={sidebarCollapsed}
         onNavigate={handleSidebarNavigate}
+        onClose={() => setSidebarOpen(false)}
       />
+
+
       {/* Sidebar Overlay */}
       {sidebarOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-gray-600 bg-opacity-50 z-40 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
       {/* Main Content */}
-      <div className="flex-1 flex flex-col lg:ml-0">
-        <Header onMenuClick={() => setSidebarOpen(!sidebarOpen)} />
+      <div className={`flex-1 flex flex-col transition-all duration-300 ${sidebarCollapsed ? 'lg:ml-0' : 'lg:ml-0'}`}>
+        <Header
+          onMenuClick={() => setSidebarOpen(!sidebarOpen)}
+          onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
+          isSidebarCollapsed={sidebarCollapsed}
+        />
+
         <main className="flex-1 p-6">
           <div className="max-w-7xl mx-auto">
             {renderContent()}

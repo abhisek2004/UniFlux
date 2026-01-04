@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
-import { Calendar, Clock, User, BookOpen, Download, Printer as Print } from 'lucide-react';
+import { Calendar, Clock, User, BookOpen, Download, Printer as Print, Search } from 'lucide-react';
+
 import { sampleTimetable } from '../../data/sampleData';
 
 const TimetableView: React.FC = () => {
   const { currentUser, subjects, teachers } = useApp();
   const [selectedSemester, setSelectedSemester] = useState(5);
   const [viewType, setViewType] = useState<'student' | 'teacher'>('student');
+  const [searchTerm, setSearchTerm] = useState('');
+
 
   // Sample timetables for different semesters
   const semesterTimetables = {
@@ -106,13 +109,11 @@ const TimetableView: React.FC = () => {
 
   // Filter timetable based on user role and selections
   const getTimetableData = () => {
-    const selectedTimetable = semesterTimetables[selectedSemester as keyof typeof semesterTimetables] || sampleTimetable;
-    
-    if (currentUser?.role === 'student') {
-      return selectedTimetable;
-    } else if (currentUser?.role === 'teacher') {
-      // Filter to show only classes where the teacher is assigned
-      return selectedTimetable.map(day => ({
+    let selectedTimetable = semesterTimetables[selectedSemester as keyof typeof semesterTimetables] || sampleTimetable;
+
+    // 1. Role-based filtering
+    if (currentUser?.role === 'teacher') {
+      selectedTimetable = selectedTimetable.map(day => ({
         ...day,
         timeSlots: day.timeSlots.filter(slot => {
           const subject = subjects.find(s => s.code === slot.subjectCode);
@@ -120,10 +121,25 @@ const TimetableView: React.FC = () => {
         })
       })).filter(day => day.timeSlots.length > 0);
     }
+
+    // 2. Search-based filtering
+    if (searchTerm) {
+      const lowerSearch = searchTerm.toLowerCase();
+      selectedTimetable = selectedTimetable.map(day => ({
+        ...day,
+        timeSlots: day.timeSlots.filter(slot =>
+          slot.subjectName.toLowerCase().includes(lowerSearch) ||
+          slot.subjectCode.toLowerCase().includes(lowerSearch) ||
+          slot.teacherName.toLowerCase().includes(lowerSearch)
+        )
+      })).filter(day => day.timeSlots.length > 0);
+    }
+
     return selectedTimetable;
   };
 
   const timetableData = getTimetableData();
+
 
   const getTimeSlotColor = (subjectCode: string) => {
     const colors = [
@@ -154,7 +170,7 @@ const TimetableView: React.FC = () => {
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Class Timetable</h1>
           <p className="text-gray-600 dark:text-gray-400">
-            {currentUser?.role === 'student' 
+            {currentUser?.role === 'student'
               ? `Your class schedule for Semester ${currentUser.semester}`
               : 'Your teaching schedule'
             }
@@ -178,40 +194,59 @@ const TimetableView: React.FC = () => {
         </div>
       </div>
 
-      {/* Filters */}
-      {(currentUser?.role === 'hod' || currentUser?.role === 'superadmin') && (
-        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-gray-700 no-print">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Semester
-              </label>
-              <select
-                value={selectedSemester}
-                onChange={(e) => setSelectedSemester(parseInt(e.target.value))}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"
-              >
-                {[1, 2, 3, 4, 5, 6, 7, 8].map(sem => (
-                  <option key={sem} value={sem}>Semester {sem}</option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                View Type
-              </label>
-              <select
-                value={viewType}
-                onChange={(e) => setViewType(e.target.value as 'student' | 'teacher')}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"
-              >
-                <option value="student">Student View</option>
-                <option value="teacher">Teacher View</option>
-              </select>
+      {/* Filters and Search */}
+      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-gray-700 no-print">
+        <div className="flex flex-col md:flex-row gap-4 items-end">
+          <div className="flex-1 w-full">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Search Schedule
+            </label>
+            <div className="relative">
+              <Search className="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search by subject, code, or teacher..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"
+              />
             </div>
           </div>
+
+          {(currentUser?.role === 'hod' || currentUser?.role === 'superadmin') && (
+            <div className="flex gap-4 w-full md:w-auto">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Semester
+                </label>
+                <select
+                  value={selectedSemester}
+                  onChange={(e) => setSelectedSemester(parseInt(e.target.value))}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"
+                >
+                  {[1, 2, 3, 4, 5, 6, 7, 8].map(sem => (
+                    <option key={sem} value={sem}>Sem {sem}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  View
+                </label>
+                <select
+                  value={viewType}
+                  onChange={(e) => setViewType(e.target.value as 'student' | 'teacher')}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"
+                >
+                  <option value="student">Student</option>
+                  <option value="teacher">Teacher</option>
+                </select>
+              </div>
+            </div>
+          )}
         </div>
-      )}
+      </div>
+
 
       {/* Timetable Grid */}
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
@@ -267,7 +302,7 @@ const TimetableView: React.FC = () => {
                   {/* Time slots */}
                   {['9:00-10:00', '10:00-11:00', '11:00-12:00', '12:00-1:00', '1:00-2:00', '2:00-3:00'].map((timeSlot, slotIndex) => {
                     const slot = day.timeSlots.find(s => s.time === timeSlot);
-                    
+
                     if (timeSlot === '12:00-1:00') {
                       return (
                         <td key={slotIndex} className="px-4 py-4 text-center">
@@ -279,7 +314,7 @@ const TimetableView: React.FC = () => {
                         </td>
                       );
                     }
-                    
+
                     return (
                       <td key={slotIndex} className="px-4 py-4 text-center">
                         {slot ? (
