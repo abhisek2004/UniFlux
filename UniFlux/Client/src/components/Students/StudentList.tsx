@@ -1,21 +1,30 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
-import { Search, Plus, Edit2, Eye, Download, Filter } from 'lucide-react';
+import { useToast } from '../../context/ToastContext';
+import { Search, Plus, Edit2, Eye, Download, Filter, Trash2 } from 'lucide-react';
 import StudentForm from './StudentForm';
 import { Student } from '../../types';
 
 const StudentList: React.FC = () => {
-  const { students, currentUser } = useApp();
+  const { students, currentUser, deleteStudent } = useApp();
+  const { showToast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
   const [showForm, setShowForm] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [filterSemester, setFilterSemester] = useState<string>('all');
   const [showDetails, setShowDetails] = useState<string | null>(null);
 
+  const handleDelete = (id: string) => {
+    if (window.confirm('Are you sure you want to delete this student?')) {
+      deleteStudent(id);
+      showToast('success', 'Student Deleted', 'Student record has been successfully deleted.');
+    }
+  };
+
   const filteredStudents = students.filter(student => {
     const matchesSearch = student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         student.rollNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         student.email.toLowerCase().includes(searchTerm.toLowerCase());
+      student.rollNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      student.email.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesSemester = filterSemester === 'all' || student.semester.toString() === filterSemester;
     return matchesSearch && matchesSemester;
   });
@@ -177,12 +186,11 @@ const StudentList: React.FC = () => {
                       Semester {student.semester}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                        (student.cgpa || 0) >= 9.0 ? 'bg-green-100 text-green-800' :
+                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${(student.cgpa || 0) >= 9.0 ? 'bg-green-100 text-green-800' :
                         (student.cgpa || 0) >= 8.0 ? 'bg-blue-100 text-blue-800' :
-                        (student.cgpa || 0) >= 7.0 ? 'bg-yellow-100 text-yellow-800' :
-                        'bg-red-100 text-red-800'
-                      }`}>
+                          (student.cgpa || 0) >= 7.0 ? 'bg-yellow-100 text-yellow-800' :
+                            'bg-red-100 text-red-800'
+                        }`}>
                         {student.cgpa?.toFixed(2) || 'N/A'}
                       </span>
                     </td>
@@ -210,6 +218,15 @@ const StudentList: React.FC = () => {
                         >
                           <Download className="h-4 w-4" />
                         </button>
+                        {canEdit && (
+                          <button
+                            onClick={() => handleDelete(student.id)}
+                            className="text-red-600 hover:text-red-800 transition-colors"
+                            title="Delete Student"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>
@@ -230,7 +247,7 @@ const StudentList: React.FC = () => {
                             <div className="space-y-1 text-sm text-gray-600 dark:text-gray-400">
                               <p><span className="font-medium">Current Semester:</span> {student.semester}</p>
                               <p><span className="font-medium">CGPA:</span> {student.cgpa?.toFixed(2) || 'N/A'}</p>
-                              <p><span className="font-medium">Academic Status:</span> 
+                              <p><span className="font-medium">Academic Status:</span>
                                 <span className={(student.cgpa || 0) >= 6.0 ? 'text-green-600' : 'text-red-600'}>
                                   {(student.cgpa || 0) >= 6.0 ? ' Good Standing' : ' Needs Improvement'}
                                 </span>

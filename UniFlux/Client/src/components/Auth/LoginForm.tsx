@@ -1,21 +1,56 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
-import { Eye, EyeOff, GraduationCap } from 'lucide-react';
+import { useToast } from '../../context/ToastContext';
+import { Eye, EyeOff, GraduationCap, AlertCircle } from 'lucide-react';
 
 const LoginForm: React.FC = () => {
   const { login } = useApp();
+  const { showToast } = useToast();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
     remember: false
   });
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState('');
+  const [formErrors, setFormErrors] = useState<{ email?: string; password?: string }>({});
   const [isLoading, setIsLoading] = useState(false);
+
+  const validateForm = () => {
+    const errors: { email?: string; password?: string } = {};
+    let isValid = true;
+
+    if (!formData.email) {
+      errors.email = 'Email address is required';
+      isValid = false;
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      errors.email = 'Please enter a valid email address';
+      isValid = false;
+    }
+
+    if (!formData.password) {
+      errors.password = 'Password is required';
+      isValid = false;
+    }
+
+    setFormErrors(errors);
+    return isValid;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setFormErrors({});
+
+    const isValid = validateForm();
+
+    if (!isValid) {
+      if (!formData.email || !formData.password) {
+        showToast('error', 'Action Required', 'Please enter the credentials before sign in');
+      } else {
+        showToast('error', 'Action Required', 'Please fix the errors in the form before submitting.');
+      }
+      return;
+    }
+
     setIsLoading(true);
 
     try {
@@ -24,11 +59,13 @@ const LoginForm: React.FC = () => {
         setError('Invalid email or password');
       }
     } catch (err) {
-      setError('An error occurred. Please try again.');
+      showToast('error', 'Error Occurred', 'An unexpected error occurred. Please try again later.');
     } finally {
       setIsLoading(false);
     }
   };
+
+  // ... rest of the component ...
 
   const demoCredentials = [
     { role: 'Super Admin', email: 'superadmin@campuscore.in', password: 'admin123' },
@@ -39,6 +76,7 @@ const LoginForm: React.FC = () => {
 
   const fillDemoCredentials = (email: string, password: string) => {
     setFormData({ ...formData, email, password });
+    setFormErrors({});
   };
 
   return (
@@ -58,29 +96,43 @@ const LoginForm: React.FC = () => {
         </div>
 
         {/* Login Form */}
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit} noValidate>
           <div className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
-            {error && (
-              <div className="mb-4 p-3 rounded-md bg-red-50 border border-red-200">
-                <p className="text-sm text-red-600">{error}</p>
-              </div>
-            )}
 
             <div className="space-y-4">
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                   Email Address
                 </label>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  required
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"
-                  placeholder="Enter your email"
-                />
+                <div className="mt-1 relative">
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => {
+                      setFormData({ ...formData, email: e.target.value });
+                      if (formErrors.email) setFormErrors({ ...formErrors, email: undefined });
+                    }}
+                    className={`block w-full px-3 py-2 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-0 transition-colors
+                      ${formErrors.email
+                        ? 'border-red-300 text-red-900 placeholder-red-300 focus:ring-red-500 focus:border-red-500 dark:border-red-700 dark:text-red-500'
+                        : 'border-gray-300 dark:border-gray-600 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white'
+                      }
+                    `}
+                    placeholder="Enter your email"
+                  />
+                  {formErrors.email && (
+                    <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                      <AlertCircle className="h-5 w-5 text-red-500" />
+                    </div>
+                  )}
+                </div>
+                {formErrors.email && (
+                  <p className="mt-2 text-sm text-red-600" id="email-error">
+                    {formErrors.email}
+                  </p>
+                )}
               </div>
 
               <div>
@@ -92,24 +144,41 @@ const LoginForm: React.FC = () => {
                     id="password"
                     name="password"
                     type={showPassword ? 'text' : 'password'}
-                    required
                     value={formData.password}
-                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                    className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"
+                    onChange={(e) => {
+                      setFormData({ ...formData, password: e.target.value });
+                      if (formErrors.password) setFormErrors({ ...formErrors, password: undefined });
+                    }}
+                    className={`block w-full px-3 py-2 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-0 transition-colors
+                      ${formErrors.password
+                        ? 'border-red-300 text-red-900 placeholder-red-300 focus:ring-red-500 focus:border-red-500 dark:border-red-700 dark:text-red-500'
+                        : 'border-gray-300 dark:border-gray-600 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white'
+                      }
+                    `}
                     placeholder="Enter your password"
                   />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                  >
-                    {showPassword ? (
-                      <EyeOff className="h-5 w-5 text-gray-400" />
-                    ) : (
-                      <Eye className="h-5 w-5 text-gray-400" />
+                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+                    {formErrors.password && (
+                      <AlertCircle className="h-5 w-5 text-red-500 mr-2" />
                     )}
-                  </button>
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="text-gray-400 hover:text-gray-500 focus:outline-none"
+                    >
+                      {showPassword ? (
+                        <EyeOff className="h-5 w-5" />
+                      ) : (
+                        <Eye className="h-5 w-5" />
+                      )}
+                    </button>
+                  </div>
                 </div>
+                {formErrors.password && (
+                  <p className="mt-2 text-sm text-red-600" id="password-error">
+                    {formErrors.password}
+                  </p>
+                )}
               </div>
 
               <div className="flex items-center justify-between">
@@ -155,6 +224,7 @@ const LoginForm: React.FC = () => {
             </a>
           </p>
         </div>
+
 
         {/* Demo Credentials */}
         <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">

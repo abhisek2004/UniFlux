@@ -27,6 +27,7 @@ import SubjectList from './components/Subjects/SubjectList';
 import ReportsManagement from './components/Reports/ReportsManagement';
 import SettingsManagement from './components/Settings/SettingsManagement';
 import AcademicCalendarPage from './components/AcademicCalendar/AcademicCalendarPage';
+import UserFeedback from './components/Feedback/UserFeedback';
 
 // Footer Pages
 import PrivacyPolicy from './components/Footer/PrivacyPolicy';
@@ -123,6 +124,8 @@ const MainApp: React.FC = () => {
         return <NoticeBoard />;
       case 'settings':
         return <SettingsManagement />;
+      case 'user-feedback':
+        return <UserFeedback />;
       case 'academic-calendar':
         return <AcademicCalendarPage />;
       case 'admissions':
@@ -205,6 +208,8 @@ const MainAppWithPage: React.FC<{ page: string }> = ({ page }) => {
         return <LibraryPage />;
       case 'career-services':
         return <CareerServicesPage />;
+      case 'user-feedback':
+        return <UserFeedback />;
       default:
         return <LoginForm />;
     }

@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
-import { Search, Plus, Edit2, Eye, Download, Filter, BookOpen, User, Award } from 'lucide-react';
+import { useToast } from '../../context/ToastContext';
+import { Search, Plus, Edit2, Eye, Download, Filter, BookOpen, User, Award, Trash2 } from 'lucide-react';
 import SubjectForm from './SubjectForm';
 import { Subject } from '../../types';
 
 const SubjectList: React.FC = () => {
-  const { subjects, teachers, currentUser } = useApp();
+  const { subjects, teachers, currentUser, deleteSubject } = useApp();
+  const { showToast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
   const [showForm, setShowForm] = useState(false);
   const [selectedSubject, setSelectedSubject] = useState<Subject | null>(null);
@@ -13,9 +15,16 @@ const SubjectList: React.FC = () => {
   const [filterDepartment, setFilterDepartment] = useState<string>('all');
   const [showDetails, setShowDetails] = useState<string | null>(null);
 
+  const handleDelete = (id: string) => {
+    if (window.confirm('Are you sure you want to delete this subject?')) {
+      deleteSubject(id);
+      showToast('success', 'Subject Deleted', 'Subject record has been successfully deleted.');
+    }
+  };
+
   const filteredSubjects = subjects.filter(subject => {
     const matchesSearch = subject.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         subject.code.toLowerCase().includes(searchTerm.toLowerCase());
+      subject.code.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesSemester = filterSemester === 'all' || subject.semester.toString() === filterSemester;
     const matchesDepartment = filterDepartment === 'all' || subject.department === filterDepartment;
     return matchesSearch && matchesSemester && matchesDepartment;
@@ -223,6 +232,15 @@ const SubjectList: React.FC = () => {
                         >
                           <Download className="h-4 w-4" />
                         </button>
+                        {canEdit && (
+                          <button
+                            onClick={() => handleDelete(subject.id)}
+                            className="text-red-600 hover:text-red-800 transition-colors"
+                            title="Delete Subject"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>

@@ -22,7 +22,7 @@ interface AppContextType {
   marks: Marks[];
   grievances: Grievance[];
   notices: Notice[];
-  
+
   // Actions
   addStudent: (student: Omit<Student, 'id'>) => Promise<void>;
   updateStudent: (id: string, student: Partial<Student>) => Promise<void>;
@@ -77,7 +77,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     if (savedUser) {
       setCurrentUser(JSON.parse(savedUser));
     }
-    
+
     // Check for dark mode preference
     const savedTheme = localStorage.getItem('campuscore_theme');
     if (savedTheme === 'dark') {
@@ -746,10 +746,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       notices,
       addStudent,
       updateStudent,
+      deleteStudent,
       addTeacher,
       updateTeacher,
+      deleteTeacher,
       addSubject,
       updateSubject,
+      deleteSubject,
       markAttendance,
       updateMarks,
       addGrievance,

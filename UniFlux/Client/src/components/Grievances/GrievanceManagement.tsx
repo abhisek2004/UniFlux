@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
+import { useToast } from '../../context/ToastContext';
 import { MessageSquare, Plus, Search, Filter, Clock, CheckCircle, AlertCircle } from 'lucide-react';
 import { format } from 'date-fns';
 
 const GrievanceManagement: React.FC = () => {
   const { currentUser, grievances, addGrievance, updateGrievance, students } = useApp();
+  const { showToast } = useToast();
   const [showForm, setShowForm] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
@@ -14,6 +16,7 @@ const GrievanceManagement: React.FC = () => {
     description: '',
     priority: 'medium' as 'low' | 'medium' | 'high'
   });
+  const [formErrors, setFormErrors] = useState<{ title?: string; description?: string }>({});
 
   // Filter grievances based on user role
   const filteredGrievances = grievances.filter(grievance => {
@@ -21,28 +24,59 @@ const GrievanceManagement: React.FC = () => {
     if (currentUser?.role === 'student') {
       if (grievance.studentId !== currentUser.id) return false;
     }
-    
+
     // Search filter
     if (searchTerm && !grievance.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
-        !grievance.description.toLowerCase().includes(searchTerm.toLowerCase())) {
+      !grievance.description.toLowerCase().includes(searchTerm.toLowerCase())) {
       return false;
     }
-    
+
     // Status filter
     if (statusFilter !== 'all' && grievance.status !== statusFilter) {
       return false;
     }
-    
+
     // Priority filter
     if (priorityFilter !== 'all' && grievance.priority !== priorityFilter) {
       return false;
     }
-    
+
     return true;
   });
 
+  const validateForm = () => {
+    const errors: { title?: string; description?: string } = {};
+    let isValid = true;
+
+    if (!formData.title.trim()) {
+      errors.title = 'Title is required';
+      isValid = false;
+    } else if (formData.title.length < 5) {
+      errors.title = 'Title must be at least 5 characters';
+      isValid = false;
+    }
+
+    if (!formData.description.trim()) {
+      errors.description = 'Description is required';
+      isValid = false;
+    } else if (formData.description.length < 10) {
+      errors.description = 'Description must be at least 10 characters';
+      isValid = false;
+    }
+
+    setFormErrors(errors);
+    return isValid;
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setFormErrors({});
+
+    if (!validateForm()) {
+      showToast('error', 'Validation Error', 'Please check the form fields.');
+      return;
+    }
+
     if (currentUser?.role === 'student') {
       addGrievance({
         studentId: currentUser.id,
@@ -51,6 +85,7 @@ const GrievanceManagement: React.FC = () => {
         priority: formData.priority,
         status: 'pending'
       });
+      showToast('success', 'Grievance Submitted', 'Your grievance has been successfully submitted.');
       setFormData({ title: '', description: '', priority: 'medium' });
       setShowForm(false);
     }
@@ -89,29 +124,29 @@ const GrievanceManagement: React.FC = () => {
   };
 
   const stats = [
-    { 
-      title: 'Total Grievances', 
-      value: filteredGrievances.length, 
-      icon: MessageSquare, 
-      color: 'bg-blue-500' 
+    {
+      title: 'Total Grievances',
+      value: filteredGrievances.length,
+      icon: MessageSquare,
+      color: 'bg-blue-500'
     },
-    { 
-      title: 'Pending', 
-      value: filteredGrievances.filter(g => g.status === 'pending').length, 
-      icon: Clock, 
-      color: 'bg-red-500' 
+    {
+      title: 'Pending',
+      value: filteredGrievances.filter(g => g.status === 'pending').length,
+      icon: Clock,
+      color: 'bg-red-500'
     },
-    { 
-      title: 'In Progress', 
-      value: filteredGrievances.filter(g => g.status === 'in-progress').length, 
-      icon: AlertCircle, 
-      color: 'bg-yellow-500' 
+    {
+      title: 'In Progress',
+      value: filteredGrievances.filter(g => g.status === 'in-progress').length,
+      icon: AlertCircle,
+      color: 'bg-yellow-500'
     },
-    { 
-      title: 'Resolved', 
-      value: filteredGrievances.filter(g => g.status === 'resolved').length, 
-      icon: CheckCircle, 
-      color: 'bg-green-500' 
+    {
+      title: 'Resolved',
+      value: filteredGrievances.filter(g => g.status === 'resolved').length,
+      icon: CheckCircle,
+      color: 'bg-green-500'
     }
   ];
 
@@ -122,7 +157,7 @@ const GrievanceManagement: React.FC = () => {
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Grievance Management</h1>
           <p className="text-gray-600 dark:text-gray-400">
-            {currentUser?.role === 'student' 
+            {currentUser?.role === 'student'
               ? 'Submit and track your grievances'
               : 'Manage and resolve student grievances'
             }
@@ -227,24 +262,24 @@ const GrievanceManagement: React.FC = () => {
                     {grievance.priority.toUpperCase()}
                   </span>
                 </div>
-                
+
                 {currentUser?.role !== 'student' && (
                   <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
                     Student: {getStudentName(grievance.studentId)}
                   </p>
                 )}
-                
+
                 <p className="text-gray-700 dark:text-gray-300 mb-4">
                   {grievance.description}
                 </p>
-                
+
                 <div className="flex items-center space-x-4 text-sm text-gray-500 dark:text-gray-400">
                   <span>Submitted: {format(new Date(grievance.createdAt), 'MMM dd, yyyy')}</span>
                   {grievance.resolvedAt && (
                     <span>Resolved: {format(new Date(grievance.resolvedAt), 'MMM dd, yyyy')}</span>
                   )}
                 </div>
-                
+
                 {grievance.response && (
                   <div className="mt-4 p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
                     <h4 className="text-sm font-medium text-green-800 dark:text-green-200 mb-2">Response:</h4>
@@ -252,7 +287,7 @@ const GrievanceManagement: React.FC = () => {
                   </div>
                 )}
               </div>
-              
+
               {(currentUser?.role === 'hod' || currentUser?.role === 'superadmin') && grievance.status !== 'resolved' && (
                 <div className="ml-4 flex flex-col space-y-2">
                   {grievance.status === 'pending' && (
@@ -279,13 +314,13 @@ const GrievanceManagement: React.FC = () => {
             </div>
           </div>
         ))}
-        
+
         {filteredGrievances.length === 0 && (
           <div className="text-center py-12">
             <MessageSquare className="h-12 w-12 text-gray-400 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No Grievances Found</h3>
             <p className="text-gray-500 dark:text-gray-400">
-              {currentUser?.role === 'student' 
+              {currentUser?.role === 'student'
                 ? "You haven't submitted any grievances yet."
                 : "No grievances match your current filters."
               }
@@ -301,7 +336,7 @@ const GrievanceManagement: React.FC = () => {
             <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" onClick={() => setShowForm(false)}></div>
 
             <div className="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-              <form onSubmit={handleSubmit} className="p-6">
+              <form onSubmit={handleSubmit} className="p-6" noValidate>
                 <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">
                   Submit New Grievance
                 </h3>
@@ -313,12 +348,23 @@ const GrievanceManagement: React.FC = () => {
                     </label>
                     <input
                       type="text"
-                      required
+
                       value={formData.title}
-                      onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"
+                      onChange={(e) => {
+                        setFormData({ ...formData, title: e.target.value });
+                        if (formErrors.title) setFormErrors({ ...formErrors, title: undefined });
+                      }}
+                      className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 transition-colors
+                        ${formErrors.title
+                          ? 'border-red-300 focus:ring-red-500 focus:border-red-500 dark:border-red-700'
+                          : 'border-gray-300 dark:border-gray-600 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white'
+                        }
+                      `}
                       placeholder="Brief title for your grievance"
                     />
+                    {formErrors.title && (
+                      <p className="mt-1 text-sm text-red-600">{formErrors.title}</p>
+                    )}
                   </div>
 
                   <div>
@@ -326,13 +372,23 @@ const GrievanceManagement: React.FC = () => {
                       Description
                     </label>
                     <textarea
-                      required
                       rows={4}
                       value={formData.description}
-                      onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"
+                      onChange={(e) => {
+                        setFormData({ ...formData, description: e.target.value });
+                        if (formErrors.description) setFormErrors({ ...formErrors, description: undefined });
+                      }}
+                      className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 transition-colors
+                        ${formErrors.description
+                          ? 'border-red-300 focus:ring-red-500 focus:border-red-500 dark:border-red-700'
+                          : 'border-gray-300 dark:border-gray-600 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white'
+                        }
+                      `}
                       placeholder="Detailed description of your grievance"
                     />
+                    {formErrors.description && (
+                      <p className="mt-1 text-sm text-red-600">{formErrors.description}</p>
+                    )}
                   </div>
 
                   <div>
@@ -371,6 +427,7 @@ const GrievanceManagement: React.FC = () => {
           </div>
         </div>
       )}
+
     </div>
   );
 };

@@ -47,6 +47,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isOpen, isCo
     { id: 'reports', label: 'Reports', icon: BarChart3, roles: ['superadmin', 'hod', 'teacher'], route: '/reports' },
     { id: 'grievances', label: 'Grievances', icon: MessageSquare, roles: ['superadmin', 'hod', 'student'], route: '/grievances' },
     { id: 'notices', label: 'Notices', icon: Bell, roles: ['superadmin', 'hod', 'teacher', 'student'], route: '/notices' },
+    { id: 'user-feedback', label: 'User Feedback', icon: MessageCircle, roles: ['superadmin', 'hod', 'teacher', 'student'], route: '/feedback' },
     { id: 'settings', label: 'Settings', icon: Settings, roles: ['superadmin', 'hod'], route: '/settings' }
   ];
 

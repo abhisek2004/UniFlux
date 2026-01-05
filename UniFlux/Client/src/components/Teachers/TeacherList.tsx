@@ -1,20 +1,29 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
-import { Search, Plus, Edit2, Eye, Download, Filter, GraduationCap, BookOpen, Mail } from 'lucide-react';
+import { useToast } from '../../context/ToastContext';
+import { Search, Plus, Edit2, Eye, Download, Filter, GraduationCap, BookOpen, Mail, Trash2 } from 'lucide-react';
 import TeacherForm from './TeacherForm';
 import { Teacher } from '../../types';
 
 const TeacherList: React.FC = () => {
-  const { teachers, subjects, currentUser } = useApp();
+  const { teachers, subjects, currentUser, deleteTeacher } = useApp();
+  const { showToast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
   const [showForm, setShowForm] = useState(false);
   const [selectedTeacher, setSelectedTeacher] = useState<Teacher | null>(null);
   const [filterDepartment, setFilterDepartment] = useState<string>('all');
   const [showDetails, setShowDetails] = useState<string | null>(null);
 
+  const handleDelete = (id: string) => {
+    if (window.confirm('Are you sure you want to delete this teacher?')) {
+      deleteTeacher(id);
+      showToast('success', 'Teacher Deleted', 'Teacher record has been successfully deleted.');
+    }
+  };
+
   const filteredTeachers = teachers.filter(teacher => {
     const matchesSearch = teacher.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         teacher.email.toLowerCase().includes(searchTerm.toLowerCase());
+      teacher.email.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesDepartment = filterDepartment === 'all' || teacher.department === filterDepartment;
     return matchesSearch && matchesDepartment;
   });
@@ -203,39 +212,50 @@ const TeacherList: React.FC = () => {
                           >
                             <Download className="h-4 w-4" />
                           </button>
+                          {canEdit && (
+                            <button
+                              onClick={() => handleDelete(teacher.id)}
+                              className="text-red-600 hover:text-red-800 transition-colors"
+                              title="Delete Teacher"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </button>
+                          )}
                         </div>
                       </td>
                     </tr>
-                    {showDetails === teacher.id && (
-                      <tr>
-                        <td colSpan={5} className="px-6 py-4 bg-gray-50 dark:bg-gray-700">
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                              <h4 className="font-medium text-gray-900 dark:text-white mb-2">Personal Information</h4>
-                              <div className="space-y-1 text-sm text-gray-600 dark:text-gray-400">
-                                <p><span className="font-medium">Email:</span> {teacher.email}</p>
-                                <p><span className="font-medium">Department:</span> {teacher.department}</p>
-                                <p><span className="font-medium">Faculty ID:</span> T{teacher.id.padStart(3, '0')}</p>
+                    {
+                      showDetails === teacher.id && (
+                        <tr>
+                          <td colSpan={5} className="px-6 py-4 bg-gray-50 dark:bg-gray-700">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div>
+                                <h4 className="font-medium text-gray-900 dark:text-white mb-2">Personal Information</h4>
+                                <div className="space-y-1 text-sm text-gray-600 dark:text-gray-400">
+                                  <p><span className="font-medium">Email:</span> {teacher.email}</p>
+                                  <p><span className="font-medium">Department:</span> {teacher.department}</p>
+                                  <p><span className="font-medium">Faculty ID:</span> T{teacher.id.padStart(3, '0')}</p>
+                                </div>
+                              </div>
+                              <div>
+                                <h4 className="font-medium text-gray-900 dark:text-white mb-2">Assigned Subjects</h4>
+                                <div className="space-y-1 text-sm text-gray-600 dark:text-gray-400">
+                                  {teacherSubjects.length > 0 ? (
+                                    teacherSubjects.map(subject => (
+                                      <p key={subject.id}>
+                                        <span className="font-medium">{subject.code}:</span> {subject.name} (Sem {subject.semester})
+                                      </p>
+                                    ))
+                                  ) : (
+                                    <p>No subjects assigned</p>
+                                  )}
+                                </div>
                               </div>
                             </div>
-                            <div>
-                              <h4 className="font-medium text-gray-900 dark:text-white mb-2">Assigned Subjects</h4>
-                              <div className="space-y-1 text-sm text-gray-600 dark:text-gray-400">
-                                {teacherSubjects.length > 0 ? (
-                                  teacherSubjects.map(subject => (
-                                    <p key={subject.id}>
-                                      <span className="font-medium">{subject.code}:</span> {subject.name} (Sem {subject.semester})
-                                    </p>
-                                  ))
-                                ) : (
-                                  <p>No subjects assigned</p>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
-                    )}
+                          </td>
+                        </tr>
+                      )
+                    }
                   </React.Fragment>
                 );
               })}
@@ -245,13 +265,15 @@ const TeacherList: React.FC = () => {
       </div>
 
       {/* Teacher Form Modal */}
-      {showForm && (
-        <TeacherForm
-          teacher={selectedTeacher}
-          onClose={closeForm}
-        />
-      )}
-    </div>
+      {
+        showForm && (
+          <TeacherForm
+            teacher={selectedTeacher}
+            onClose={closeForm}
+          />
+        )
+      }
+    </div >
   );
 };
 
