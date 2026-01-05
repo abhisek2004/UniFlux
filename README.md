@@ -752,9 +752,10 @@ Date: 06/07/2025   Principal Sign: ____
 | Layer            | Tech Used |
 |------------------|-----------|
 | Frontend         | TypeScript, JavaScript (ES6+), Tailwind CSS, Vite |
-| Backend          | JavaScript |
-| Database         | MongoDB Atlas |
+| Backend          | JavaScript, Node.js, Express |
+| Database         | MongoDB (Local/Atlas) |
 | Authentication  | JWT (Role-based access control) |
+| Real-time        | Socket.IO |
 | Optimization    | Rule-based scheduling & constraint logic |
 | Analytics       | Chart.js / JS-based visualization |
 | APIs             | Custom REST APIs |
@@ -891,6 +892,14 @@ flowchart TD
 </details>
 
 <img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="150%">
+
+## 🚀 Features Implemented
+
+- ✅ **MongoDB Integration**: Full database integration replacing mock data
+- ✅ **Real-time Updates**: Socket.IO for live data synchronization
+- ✅ **Role-based Authentication**: Secure login for Super Admin, HOD, Teacher, and Student
+- ✅ **CRUD Operations**: Full Create, Read, Update, Delete functionality for all entities
+- ✅ **Real-time Dashboard**: Live updating of student, teacher, subject, attendance, marks, grievances, and notices
 
 ## 🧑‍🤝‍🧑 Open Source Roles (UniFlux)
 

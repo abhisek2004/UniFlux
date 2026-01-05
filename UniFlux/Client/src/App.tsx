@@ -5,6 +5,9 @@ import Header from './components/Layout/Header';
 import Sidebar from './components/Layout/Sidebar';
 import Footer from './components/Layout/Footer';
 import LoginForm from './components/Auth/LoginForm';
+import RoleSelection from './components/Auth/RoleSelection';
+import RegistrationForm from './components/Auth/RegistrationForm';
+import SuperAdminLogin from './components/Auth/SuperAdminLogin';
 
 // Dashboard Components
 import SuperAdminDashboard from './components/Dashboard/SuperAdminDashboard';
@@ -62,10 +65,18 @@ function App() {
         <Route path="/faculty-directory" element={<MainAppWithPage page="faculty-directory" />} />
         <Route path="/library" element={<MainAppWithPage page="library" />} />
         <Route path="/career-services" element={<MainAppWithPage page="career-services" />} />
-        <Route path="/feedback" element={<MainAppWithPage page="user-feedback" />} />
-
+        
+        {/* Authentication Routes */}
+        <Route path="/login" element={<LoginForm />} />
+        <Route path="/role-selection" element={<RoleSelection />} />
+        <Route path="/register/:role" element={<RegistrationForm />} />
+        <Route path="/superadmin" element={<SuperAdminLogin />} />
+        
         {/* Main App Route */}
-        <Route path="/*" element={currentUser ? <MainApp /> : <LoginForm />} />
+        <Route path="/*" element={currentUser ? <MainApp /> : <RoleSelection />} />
+        
+        {/* Redirect from root to role selection */}
+        <Route path="/" element={<RoleSelection />} />
       </Routes>
     </Router>
   );
@@ -75,6 +86,8 @@ const MainApp: React.FC = () => {
   const { currentUser } = useApp();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
 
   const renderContent = () => {
     switch (activeTab) {
@@ -142,7 +155,11 @@ const MainApp: React.FC = () => {
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         isOpen={sidebarOpen}
+        isCollapsed={sidebarCollapsed}
+        onClose={() => setSidebarOpen(false)}
       />
+
+
       {/* Sidebar Overlay */}
       {sidebarOpen && (
         <div
@@ -151,8 +168,13 @@ const MainApp: React.FC = () => {
         />
       )}
       {/* Main Content */}
-      <div className="flex-1 flex flex-col lg:ml-0">
-        <Header onMenuClick={() => setSidebarOpen(!sidebarOpen)} />
+      <div className={`flex-1 flex flex-col transition-all duration-300 ${sidebarCollapsed ? 'lg:ml-0' : 'lg:ml-0'}`}>
+        <Header
+          onMenuClick={() => setSidebarOpen(!sidebarOpen)}
+          onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
+          isSidebarCollapsed={sidebarCollapsed}
+        />
+
         <main className="flex-1 p-6">
           <div className="max-w-7xl mx-auto">
             {renderContent()}
@@ -168,7 +190,9 @@ const MainApp: React.FC = () => {
 const MainAppWithPage: React.FC<{ page: string }> = ({ page }) => {
   const { currentUser } = useApp();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const navigate = useNavigate();
+
 
   const renderContent = () => {
     switch (page) {
@@ -202,8 +226,12 @@ const MainAppWithPage: React.FC<{ page: string }> = ({ page }) => {
         activeTab={page}
         setActiveTab={() => { }}
         isOpen={sidebarOpen}
+        isCollapsed={sidebarCollapsed}
         onNavigate={handleSidebarNavigate}
+        onClose={() => setSidebarOpen(false)}
       />
+
+
       {/* Sidebar Overlay */}
       {sidebarOpen && (
         <div
@@ -212,8 +240,13 @@ const MainAppWithPage: React.FC<{ page: string }> = ({ page }) => {
         />
       )}
       {/* Main Content */}
-      <div className="flex-1 flex flex-col lg:ml-0">
-        <Header onMenuClick={() => setSidebarOpen(!sidebarOpen)} />
+      <div className={`flex-1 flex flex-col transition-all duration-300 ${sidebarCollapsed ? 'lg:ml-0' : 'lg:ml-0'}`}>
+        <Header
+          onMenuClick={() => setSidebarOpen(!sidebarOpen)}
+          onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
+          isSidebarCollapsed={sidebarCollapsed}
+        />
+
         <main className="flex-1 p-6">
           <div className="max-w-7xl mx-auto">
             {renderContent()}

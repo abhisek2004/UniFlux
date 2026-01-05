@@ -2,6 +2,8 @@ import React from 'react';
 import { useApp } from '../../context/AppContext';
 import { BookOpen, Calendar, ClipboardCheck, Award, Bell, MessageSquare, TrendingUp, Clock } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
+import DashboardSummary from './DashboardSummary';
+
 
 const StudentDashboard: React.FC = () => {
   const { currentUser, attendance, marks, subjects, notices, grievances } = useApp();
@@ -9,28 +11,28 @@ const StudentDashboard: React.FC = () => {
   // Calculate student-specific data
   const studentAttendance = attendance.filter(a => a.studentId === currentUser?.id);
   const studentMarks = marks.filter(m => m.studentId === currentUser?.id);
-  
+
   const totalClasses = studentAttendance.length;
   const presentClasses = studentAttendance.filter(a => a.status === 'present').length;
   const attendancePercentage = totalClasses > 0 ? Math.round((presentClasses / totalClasses) * 100) : 0;
-  
-  const avgMarks = studentMarks.length > 0 
-    ? studentMarks.reduce((sum, m) => sum + m.totalMarks, 0) / studentMarks.length 
+
+  const avgMarks = studentMarks.length > 0
+    ? studentMarks.reduce((sum, m) => sum + m.totalMarks, 0) / studentMarks.length
     : 0;
 
   const currentSemester = currentUser?.semester || 5;
-  const currentCGPA = studentMarks.length > 0 
-    ? studentMarks.reduce((sum, m) => sum + (m.totalMarks / 10), 0) / studentMarks.length 
+  const currentCGPA = studentMarks.length > 0
+    ? studentMarks.reduce((sum, m) => sum + (m.totalMarks / 10), 0) / studentMarks.length
     : 0;
 
   // Subject-wise performance
   const subjectPerformance = subjects.map(subject => {
     const subjectMark = studentMarks.find(m => m.subjectId === subject.id);
     const subjectAttendance = studentAttendance.filter(a => a.subjectId === subject.id);
-    const subjectAttendancePercentage = subjectAttendance.length > 0 
+    const subjectAttendancePercentage = subjectAttendance.length > 0
       ? Math.round((subjectAttendance.filter(a => a.status === 'present').length / subjectAttendance.length) * 100)
       : 0;
-    
+
     return {
       name: subject.code,
       marks: subjectMark?.totalMarks || 0,
@@ -60,7 +62,7 @@ const StudentDashboard: React.FC = () => {
   return (
     <div className="space-y-6 animate-fade-in">
       {/* Welcome Section */}
-      <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl p-6 text-white">
+      <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl p-6 text-white mb-6">
         <h1 className="text-2xl font-bold mb-2">Welcome back, {currentUser?.name}!</h1>
         <p className="opacity-90">Here's your academic progress and updates for Semester {currentSemester}.</p>
         <div className="mt-4 flex items-center space-x-4">
@@ -72,6 +74,22 @@ const StudentDashboard: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Quick Summary Widgets */}
+      <DashboardSummary
+        nextClass={{
+          subject: "Mathematics II",
+          time: "Tomorrow at 9:00 AM",
+          room: "Room 302"
+        }}
+        attendanceStatus={{
+          percentage: attendancePercentage,
+          status: attendancePercentage >= 75 ? 'Good' : attendancePercentage >= 60 ? 'Fair' : 'Low'
+        }}
+        recentNotice={notices[0]?.title}
+        pendingGrievances={grievances.filter(g => g.studentId === currentUser?.id && g.status !== 'resolved').length}
+      />
+
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -156,11 +174,10 @@ const StudentDashboard: React.FC = () => {
                     <h4 className="text-sm font-medium text-gray-900 dark:text-white">{notice.title}</h4>
                     <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{notice.content.substring(0, 80)}...</p>
                   </div>
-                  <span className={`px-2 py-1 text-xs rounded-full ${
-                    notice.priority === 'urgent' ? 'bg-red-100 text-red-800' :
-                    notice.priority === 'important' ? 'bg-yellow-100 text-yellow-800' :
-                    'bg-blue-100 text-blue-800'
-                  }`}>
+                  <span className={`px-2 py-1 text-xs rounded-full ${notice.priority === 'urgent' ? 'bg-red-100 text-red-800' :
+                      notice.priority === 'important' ? 'bg-yellow-100 text-yellow-800' :
+                        'bg-blue-100 text-blue-800'
+                    }`}>
                     {notice.priority}
                   </span>
                 </div>
@@ -184,11 +201,10 @@ const StudentDashboard: React.FC = () => {
                       <h4 className="text-sm font-medium text-gray-900 dark:text-white">{grievance.title}</h4>
                       <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{grievance.description.substring(0, 60)}...</p>
                     </div>
-                    <span className={`px-2 py-1 text-xs rounded-full ${
-                      grievance.status === 'resolved' ? 'bg-green-100 text-green-800' :
-                      grievance.status === 'in-progress' ? 'bg-yellow-100 text-yellow-800' :
-                      'bg-red-100 text-red-800'
-                    }`}>
+                    <span className={`px-2 py-1 text-xs rounded-full ${grievance.status === 'resolved' ? 'bg-green-100 text-green-800' :
+                        grievance.status === 'in-progress' ? 'bg-yellow-100 text-yellow-800' :
+                          'bg-red-100 text-red-800'
+                      }`}>
                       {grievance.status}
                     </span>
                   </div>

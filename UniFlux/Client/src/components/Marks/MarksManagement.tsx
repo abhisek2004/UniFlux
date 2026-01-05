@@ -10,21 +10,31 @@ const MarksManagement: React.FC = () => {
   const [editingMark, setEditingMark] = useState<string | null>(null);
   const [editValues, setEditValues] = useState({ internal: 0, external: 0 });
   const [viewMode, setViewMode] = useState<'entry' | 'results'>('entry');
+  const [resultStatus, setResultStatus] = useState<'all' | 'pass' | 'fail'>('all');
+
 
   // Filter subjects based on user role
-  const availableSubjects = currentUser?.role === 'teacher' 
+  const availableSubjects = currentUser?.role === 'teacher'
     ? subjects.filter(s => s.teacherId === currentUser.id)
     : subjects;
 
   // Filter students based on current user role
-  const availableStudents = currentUser?.role === 'student' 
+  const availableStudents = currentUser?.role === 'student'
     ? students.filter(s => s.id === currentUser.id)
     : students;
 
-  const filteredStudents = availableStudents.filter(student =>
-    student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    student.rollNumber.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredStudents = availableStudents.filter(student => {
+    const matchesSearch = student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      student.rollNumber.toLowerCase().includes(searchTerm.toLowerCase());
+
+    if (resultStatus === 'all') return matchesSearch;
+
+    const studentMarks = marks.filter(m => m.studentId === student.id);
+    const isPassed = studentMarks.length > 0 && studentMarks.every(m => m.totalMarks >= 40);
+
+    return matchesSearch && (resultStatus === 'pass' ? isPassed : !isPassed);
+  });
+
 
   // Get marks for a specific student and subject
   const getStudentMarks = (studentId: string, subjectId: string) => {
@@ -64,13 +74,13 @@ const MarksManagement: React.FC = () => {
   // Generate PDF marksheet for a student
   const generateMarksheet = (student: any) => {
     const doc = new jsPDF();
-    
+
     // Header
     doc.setFontSize(20);
     doc.text('CAMPUSCORE UNIVERSITY', 105, 20, { align: 'center' });
     doc.setFontSize(16);
     doc.text('Semester Grade Sheet - 2025', 105, 30, { align: 'center' });
-    
+
     // Student Info
     doc.setFontSize(12);
     doc.text(`Name: ${student.name}`, 20, 50);
@@ -78,22 +88,22 @@ const MarksManagement: React.FC = () => {
     doc.text(`Registration No: ${student.registrationNo}`, 20, 70);
     doc.text(`Department: ${student.department}`, 20, 80);
     doc.text(`Semester: ${student.semester}`, 20, 90);
-    
+
     // Table header
     doc.text('Subject', 20, 110);
     doc.text('Internal', 80, 110);
     doc.text('External', 110, 110);
     doc.text('Total', 140, 110);
     doc.text('Grade', 170, 110);
-    
+
     // Draw line
     doc.line(20, 115, 190, 115);
-    
+
     // Student marks
     let yPos = 125;
     let totalMarks = 0;
     let totalSubjects = 0;
-    
+
     subjects.forEach(subject => {
       const studentMark = marks.find(m => m.studentId === student.id && m.subjectId === subject.id);
       if (studentMark) {
@@ -102,24 +112,24 @@ const MarksManagement: React.FC = () => {
         doc.text(studentMark.externalMarks.toString(), 110, yPos);
         doc.text(studentMark.totalMarks.toString(), 140, yPos);
         doc.text(studentMark.grade, 170, yPos);
-        
+
         totalMarks += studentMark.totalMarks;
         totalSubjects++;
         yPos += 10;
       }
     });
-    
+
     // Summary
     doc.line(20, yPos, 190, yPos);
     yPos += 15;
     const cgpa = totalSubjects > 0 ? (totalMarks / (totalSubjects * 10)).toFixed(2) : '0.00';
     doc.text(`CGPA: ${cgpa}`, 20, yPos);
     doc.text(`Result: ${totalMarks >= (totalSubjects * 40) ? 'PASS' : 'FAIL'}`, 20, yPos + 10);
-    
+
     // Footer
     doc.text(`Date: ${new Date().toLocaleDateString()}`, 20, yPos + 30);
     doc.text('Principal Signature: ________________', 120, yPos + 30);
-    
+
     doc.save(`${student.name}_Marksheet.pdf`);
   };
 
@@ -134,21 +144,19 @@ const MarksManagement: React.FC = () => {
         <div className="flex space-x-3">
           <button
             onClick={() => setViewMode('entry')}
-            className={`px-4 py-2 rounded-lg transition-colors ${
-              viewMode === 'entry' 
-                ? 'bg-primary-600 text-white' 
+            className={`px-4 py-2 rounded-lg transition-colors ${viewMode === 'entry'
+                ? 'bg-primary-600 text-white'
                 : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
-            }`}
+              }`}
           >
             Marks Entry
           </button>
           <button
             onClick={() => setViewMode('results')}
-            className={`px-4 py-2 rounded-lg transition-colors ${
-              viewMode === 'results' 
-                ? 'bg-primary-600 text-white' 
+            className={`px-4 py-2 rounded-lg transition-colors ${viewMode === 'results'
+                ? 'bg-primary-600 text-white'
                 : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
-            }`}
+              }`}
           >
             View Results
           </button>
@@ -177,7 +185,7 @@ const MarksManagement: React.FC = () => {
               </select>
             </div>
           )}
-          
+
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Search Students
@@ -193,8 +201,24 @@ const MarksManagement: React.FC = () => {
               />
             </div>
           </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Result Status
+            </label>
+            <select
+              value={resultStatus}
+              onChange={(e) => setResultStatus(e.target.value as 'all' | 'pass' | 'fail')}
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"
+            >
+              <option value="all">All Results</option>
+              <option value="pass">Passed</option>
+              <option value="fail">Failed</option>
+            </select>
+          </div>
         </div>
       </div>
+
 
       {viewMode === 'entry' ? (
         /* Marks Entry View */
@@ -202,7 +226,7 @@ const MarksManagement: React.FC = () => {
           <div className="p-6 border-b border-gray-200 dark:border-gray-700">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Marks Entry</h3>
           </div>
-          
+
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead className="bg-gray-50 dark:bg-gray-700">
@@ -233,14 +257,14 @@ const MarksManagement: React.FC = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-                {filteredStudents.map(student => 
+                {filteredStudents.map(student =>
                   (selectedSubject ? [selectedSubject] : availableSubjects.map(s => s.id)).map(subjectId => {
                     const subject = subjects.find(s => s.id === subjectId);
                     const mark = getStudentMarks(student.id, subjectId);
                     const isEditing = editingMark === `${student.id}-${subjectId}`;
-                    
+
                     if (!subject) return null;
-                    
+
                     return (
                       <tr key={`${student.id}-${subjectId}`} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                         <td className="px-6 py-4 whitespace-nowrap">
@@ -270,7 +294,7 @@ const MarksManagement: React.FC = () => {
                               min="0"
                               max="30"
                               value={editValues.internal}
-                              onChange={(e) => setEditValues({...editValues, internal: parseInt(e.target.value) || 0})}
+                              onChange={(e) => setEditValues({ ...editValues, internal: parseInt(e.target.value) || 0 })}
                               className="w-16 px-2 py-1 border border-gray-300 rounded text-center"
                             />
                           ) : (
@@ -284,7 +308,7 @@ const MarksManagement: React.FC = () => {
                               min="0"
                               max="70"
                               value={editValues.external}
-                              onChange={(e) => setEditValues({...editValues, external: parseInt(e.target.value) || 0})}
+                              onChange={(e) => setEditValues({ ...editValues, external: parseInt(e.target.value) || 0 })}
                               className="w-16 px-2 py-1 border border-gray-300 rounded text-center"
                             />
                           ) : (
@@ -296,12 +320,11 @@ const MarksManagement: React.FC = () => {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           {mark ? (
-                            <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                              mark.grade === 'A+' || mark.grade === 'A' ? 'bg-green-100 text-green-800' :
-                              mark.grade === 'B+' || mark.grade === 'B' ? 'bg-blue-100 text-blue-800' :
-                              mark.grade === 'C' ? 'bg-yellow-100 text-yellow-800' :
-                              'bg-red-100 text-red-800'
-                            }`}>
+                            <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${mark.grade === 'A+' || mark.grade === 'A' ? 'bg-green-100 text-green-800' :
+                                mark.grade === 'B+' || mark.grade === 'B' ? 'bg-blue-100 text-blue-800' :
+                                  mark.grade === 'C' ? 'bg-yellow-100 text-yellow-800' :
+                                    'bg-red-100 text-red-800'
+                              }`}>
                               {isEditing ? calculateGrade(editValues.internal + editValues.external) : mark.grade}
                             </span>
                           ) : (
@@ -404,7 +427,7 @@ const MarksManagement: React.FC = () => {
                     const totalMarks = studentMarks.reduce((sum, m) => sum + m.totalMarks, 0);
                     const cgpa = studentMarks.length > 0 ? (totalMarks / (studentMarks.length * 10)).toFixed(2) : '0.00';
                     const isPassed = studentMarks.every(m => m.totalMarks >= 40);
-                    
+
                     return (
                       <tr key={student.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                         <td className="px-6 py-4 whitespace-nowrap">
@@ -425,19 +448,17 @@ const MarksManagement: React.FC = () => {
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <span className={`text-lg font-bold ${
-                            parseFloat(cgpa) >= 9.0 ? 'text-green-600' :
-                            parseFloat(cgpa) >= 8.0 ? 'text-blue-600' :
-                            parseFloat(cgpa) >= 7.0 ? 'text-yellow-600' :
-                            'text-red-600'
-                          }`}>
+                          <span className={`text-lg font-bold ${parseFloat(cgpa) >= 9.0 ? 'text-green-600' :
+                              parseFloat(cgpa) >= 8.0 ? 'text-blue-600' :
+                                parseFloat(cgpa) >= 7.0 ? 'text-yellow-600' :
+                                  'text-red-600'
+                            }`}>
                             {cgpa}
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                            isPassed ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                          }`}>
+                          <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${isPassed ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                            }`}>
                             {isPassed ? 'PASS' : 'FAIL'}
                           </span>
                         </td>

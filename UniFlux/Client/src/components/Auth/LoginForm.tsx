@@ -54,15 +54,9 @@ const LoginForm: React.FC = () => {
     setIsLoading(true);
 
     try {
-      // simulate network delay for better UX feel
-      await new Promise(resolve => setTimeout(resolve, 800));
-
-      const success = login(formData.email, formData.password);
-      if (success) {
-        showToast('success', 'Welcome back!', 'You have successfully logged in.');
-      } else {
-        showToast('error', 'Login Failed', 'Invalid email or password. Please try again.');
-        setFormErrors({ email: ' ', password: ' ' }); // Highlight fields
+      const success = await login(formData.email, formData.password);
+      if (!success) {
+        setError('Invalid email or password');
       }
     } catch (err) {
       showToast('error', 'Error Occurred', 'An unexpected error occurred. Please try again later.');
@@ -220,6 +214,16 @@ const LoginForm: React.FC = () => {
             </div>
           </div>
         </form>
+        
+        {/* Role Selection Link */}
+        <div className="text-center mt-4">
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            Need to register?{' '}
+            <a href="/role-selection" className="font-medium text-primary-600 hover:text-primary-500">
+              Select your role
+            </a>
+          </p>
+        </div>
 
 
         {/* Demo Credentials */}
