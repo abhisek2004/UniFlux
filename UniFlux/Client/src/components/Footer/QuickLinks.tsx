@@ -1,5 +1,6 @@
 import React from 'react';
-import { Calendar, Users, GraduationCap, BookOpen, Building, Briefcase, ExternalLink, ChevronDown, ChevronUp } from 'lucide-react';
+import { Calendar, Users, GraduationCap, BookOpen, Building, Briefcase, ExternalLink, ChevronDown, ChevronUp, ArrowLeft } from 'lucide-react';
+
 import { useNavigate } from 'react-router-dom';
 
 const QuickLinks: React.FC = () => {
@@ -102,15 +103,31 @@ const QuickLinks: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12 relative">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Back to Home Button */}
+        <div className="mb-8">
+          <button
+            onClick={() => navigate('/')}
+            className="inline-flex items-center space-x-2 text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors font-medium group"
+          >
+            <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
+            <span>Back to Home</span>
+          </button>
+        </div>
+
         {/* Header */}
         <div className="text-center mb-12">
           <div className="flex justify-center mb-4">
-            <div className="p-3 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full">
+            <button 
+              onClick={() => navigate('/')}
+              className="p-3 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full hover:shadow-lg transform hover:scale-105 transition-all duration-300"
+              title="Return to Home"
+            >
               <ExternalLink className="h-8 w-8 text-white" />
-            </div>
+            </button>
           </div>
+
           <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">Quick Links</h1>
           <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
             Easy access to essential university services, resources, and information
