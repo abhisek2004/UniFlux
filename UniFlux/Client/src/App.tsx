@@ -5,6 +5,9 @@ import Header from './components/Layout/Header';
 import Sidebar from './components/Layout/Sidebar';
 import Footer from './components/Layout/Footer';
 import LoginForm from './components/Auth/LoginForm';
+import RoleSelection from './components/Auth/RoleSelection';
+import RegistrationForm from './components/Auth/RegistrationForm';
+import SuperAdminLogin from './components/Auth/SuperAdminLogin';
 
 // Dashboard Components
 import SuperAdminDashboard from './components/Dashboard/SuperAdminDashboard';
@@ -62,8 +65,17 @@ function App() {
         <Route path="/library" element={<MainAppWithPage page="library" />} />
         <Route path="/career-services" element={<MainAppWithPage page="career-services" />} />
         
+        {/* Authentication Routes */}
+        <Route path="/login" element={<LoginForm />} />
+        <Route path="/role-selection" element={<RoleSelection />} />
+        <Route path="/register/:role" element={<RegistrationForm />} />
+        <Route path="/superadmin" element={<SuperAdminLogin />} />
+        
         {/* Main App Route */}
-        <Route path="/*" element={currentUser ? <MainApp /> : <LoginForm />} />
+        <Route path="/*" element={currentUser ? <MainApp /> : <RoleSelection />} />
+        
+        {/* Redirect from root to role selection */}
+        <Route path="/" element={<RoleSelection />} />
       </Routes>
     </Router>
   );

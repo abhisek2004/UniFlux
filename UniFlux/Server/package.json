@@ -3,13 +3,22 @@
   "version": "1.0.0",
   "description": "Backend server for UniFlux - AI-Powered Smart University Management Platform",
   "main": "dist/index.js",
+  "type": "module",
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
     "dev": "nodemon src/index.js",
+    "seed": "node src/utils/seeder.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["university", "management", "timetable", "express", "mongodb", "typescript"],
+  "keywords": [
+    "university",
+    "management",
+    "timetable",
+    "express",
+    "mongodb",
+    "typescript"
+  ],
   "author": "UniFlux Contributors",
   "license": "ISC",
   "repository": {
@@ -22,11 +31,13 @@
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
-    "mongoose": "^9.1.1"
+    "mongoose": "^9.1.1",
+    "socket.io": "^4.8.3"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",
     "@types/node": "^25.0.3",
+    "@types/socket.io": "^3.0.1",
     "nodemon": "^3.1.11",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
