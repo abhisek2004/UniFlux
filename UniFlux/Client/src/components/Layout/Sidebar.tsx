@@ -9,6 +9,7 @@ import {
   ClipboardCheck,
   FileText,
   MessageSquare,
+  MessageCircle,
   Settings,
   BarChart3,
   UserCheck,
@@ -17,8 +18,6 @@ import {
   ChevronLeft,
   LayoutGrid
 } from 'lucide-react';
-
-
 
 interface SidebarProps {
   activeTab: string;
@@ -29,11 +28,7 @@ interface SidebarProps {
   onClose?: () => void;
 }
 
-
-
 const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isOpen, isCollapsed, onNavigate, onClose }) => {
-
-
   const { currentUser } = useApp();
 
   const menuItems = [
@@ -60,12 +55,8 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isOpen, isCo
       fixed inset-y-0 left-0 z-50 w-64 ${isCollapsed ? 'lg:w-20' : 'lg:w-64'} bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 transform transition-all duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0
       ${isOpen ? 'translate-x-0' : '-translate-x-full'}
     `}>
-
-
       <div className="flex flex-col h-full">
         <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
-
-
           <div className={`flex items-center justify-between flex-shrink-0 px-4 ${isCollapsed ? 'lg:justify-center lg:px-0 pt-4' : 'pt-5'} pb-4 lg:hidden`}>
             <div className="flex items-center">
               <div className="h-8 w-8 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-lg flex items-center justify-center">
@@ -82,10 +73,6 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isOpen, isCo
               <ChevronLeft className="h-6 w-6" />
             </button>
           </div>
-
-
-
-
 
           <nav className="mt-8 flex-1 px-2 space-y-1">
             {filteredMenuItems.map((item) => {
@@ -115,8 +102,6 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isOpen, isCo
                   />
                   <span className={`${isCollapsed ? 'lg:hidden' : ''}`}>{item.label}</span>
                 </button>
-
-
               );
             })}
           </nav>
@@ -138,8 +123,6 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isOpen, isCo
               </p>
             </div>
           </div>
-
-
         </div>
       </div>
     </aside>
