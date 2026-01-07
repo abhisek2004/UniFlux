@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
-import { Users, GraduationCap, BookOpen, TrendingUp, Award, UserCheck } from 'lucide-react';
+import { Users, GraduationCap, BookOpen, TrendingUp, Award, UserCheck, RefreshCw } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from 'recharts';
 import SkeletonStats from '../Common/SkeletonStats';
 import SkeletonCard from '../Common/SkeletonCard';
@@ -66,7 +66,11 @@ const SuperAdminDashboard: React.FC = () => {
     <div className="space-y-6 animate-fade-in">
       {/* Welcome Section with Skeleton */}
       {isLoading ? (
-        <div className="bg-gradient-to-r from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 rounded-xl p-6 animate-pulse">
+        <div 
+          className="bg-gradient-to-r from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 rounded-xl p-6 animate-pulse"
+          aria-label="Loading welcome section"
+          aria-busy="true"
+        >
           <div className="h-7 w-64 bg-gray-300 dark:bg-gray-600 rounded mb-2"></div>
           <div className="h-4 w-96 bg-gray-300 dark:bg-gray-600 rounded"></div>
         </div>
@@ -85,14 +89,19 @@ const SuperAdminDashboard: React.FC = () => {
           {stats.map((stat, index) => {
             const Icon = stat.icon;
             return (
-              <div key={index} className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-gray-700">
+              <div 
+                key={index} 
+                className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-gray-700"
+                role="region"
+                aria-label={`${stat.title} statistics`}
+              >
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{stat.title}</p>
                     <p className="text-2xl font-bold text-gray-900 dark:text-white">{stat.value}</p>
                     <p className="text-sm text-green-600 mt-1">{stat.change} from last month</p>
                   </div>
-                  <div className={`p-3 rounded-lg ${stat.color}`}>
+                  <div className={`p-3 rounded-lg ${stat.color}`} aria-hidden="true">
                     <Icon className="h-6 w-6 text-white" />
                   </div>
                 </div>
@@ -105,10 +114,27 @@ const SuperAdminDashboard: React.FC = () => {
       {/* Charts Section with Skeleton */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Department Statistics Chart */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-gray-700">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Department Overview</h3>
+        <div 
+          className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-gray-700"
+          role="region"
+          aria-label="Department overview chart"
+        >
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Department Overview</h3>
+            <button
+              className="p-2 rounded-lg text-gray-500 hover:text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-300 transition-colors"
+              aria-label="Refresh department data"
+              title="Refresh data"
+            >
+              <RefreshCw className="h-4 w-4" />
+            </button>
+          </div>
           {isChartLoading ? (
-            <div className="h-[300px] flex items-center justify-center">
+            <div 
+              className="h-[300px] flex items-center justify-center"
+              aria-label="Loading department chart"
+              aria-busy="true"
+            >
               <div className="w-full h-full bg-gray-100 dark:bg-gray-700 animate-pulse rounded"></div>
             </div>
           ) : (
@@ -126,10 +152,18 @@ const SuperAdminDashboard: React.FC = () => {
         </div>
 
         {/* Grade Distribution Chart */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-gray-700">
+        <div 
+          className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-gray-700"
+          role="region"
+          aria-label="Grade distribution chart"
+        >
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Grade Distribution</h3>
           {isChartLoading ? (
-            <div className="h-[300px] flex items-center justify-center">
+            <div 
+              className="h-[300px] flex items-center justify-center"
+              aria-label="Loading grade distribution chart"
+              aria-busy="true"
+            >
               <div className="w-64 h-64 bg-gray-100 dark:bg-gray-700 animate-pulse rounded-full"></div>
             </div>
           ) : (
@@ -154,10 +188,18 @@ const SuperAdminDashboard: React.FC = () => {
         </div>
 
         {/* Performance Trend Chart */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-gray-700 lg:col-span-2">
+        <div 
+          className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-gray-700 lg:col-span-2"
+          role="region"
+          aria-label="Average performance trend chart"
+        >
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Average Performance Trend</h3>
           {isChartLoading ? (
-            <div className="h-[300px] flex items-center justify-center">
+            <div 
+              className="h-[300px] flex items-center justify-center"
+              aria-label="Loading performance trend chart"
+              aria-busy="true"
+            >
               <div className="w-full h-full bg-gray-100 dark:bg-gray-700 animate-pulse rounded"></div>
             </div>
           ) : (
@@ -175,10 +217,22 @@ const SuperAdminDashboard: React.FC = () => {
       </div>
 
       {/* Recent Activity with Skeleton */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-gray-700">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Recent Activity</h3>
+      <div 
+        className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-gray-700"
+        role="region"
+        aria-label="Recent activity feed"
+      >
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Recent Activity</h3>
+          <button
+            className="text-sm text-primary-600 hover:text-primary-700 font-medium"
+            aria-label="View all activity"
+          >
+            View All →
+          </button>
+        </div>
         {isLoading ? (
-          <div className="space-y-4">
+          <div className="space-y-4" aria-label="Loading recent activity" aria-busy="true">
             {[1, 2, 3].map((item) => (
               <div key={item} className="flex items-center space-x-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-700 animate-pulse">
                 <div className="h-8 w-8 bg-gray-300 dark:bg-gray-600 rounded-full"></div>
@@ -192,8 +246,11 @@ const SuperAdminDashboard: React.FC = () => {
           </div>
         ) : (
           <div className="space-y-4">
-            <div className="flex items-center space-x-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-700">
-              <div className="h-8 w-8 bg-green-500 rounded-full flex items-center justify-center">
+            <div className="flex items-center space-x-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
+              <div 
+                className="h-8 w-8 bg-green-500 rounded-full flex items-center justify-center"
+                aria-label="New student registration"
+              >
                 <Users className="h-4 w-4 text-white" />
               </div>
               <div>
@@ -202,8 +259,11 @@ const SuperAdminDashboard: React.FC = () => {
               </div>
               <span className="text-xs text-gray-500 dark:text-gray-400">2 hours ago</span>
             </div>
-            <div className="flex items-center space-x-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-700">
-              <div className="h-8 w-8 bg-blue-500 rounded-full flex items-center justify-center">
+            <div className="flex items-center space-x-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
+              <div 
+                className="h-8 w-8 bg-blue-500 rounded-full flex items-center justify-center"
+                aria-label="Results published"
+              >
                 <Award className="h-4 w-4 text-white" />
               </div>
               <div>
@@ -212,8 +272,11 @@ const SuperAdminDashboard: React.FC = () => {
               </div>
               <span className="text-xs text-gray-500 dark:text-gray-400">5 hours ago</span>
             </div>
-            <div className="flex items-center space-x-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-700">
-              <div className="h-8 w-8 bg-purple-500 rounded-full flex items-center justify-center">
+            <div className="flex items-center space-x-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
+              <div 
+                className="h-8 w-8 bg-purple-500 rounded-full flex items-center justify-center"
+                aria-label="New subject added"
+              >
                 <BookOpen className="h-4 w-4 text-white" />
               </div>
               <div>

@@ -6,7 +6,6 @@ import {
   GraduationCap,
   BookOpen,
   Calendar,
-  ClipboardCheck,
   FileText,
   MessageSquare,
   MessageCircle,
@@ -51,10 +50,15 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isOpen, isCo
   );
 
   return (
-    <aside className={`
-      fixed inset-y-0 left-0 z-50 w-64 ${isCollapsed ? 'lg:w-20' : 'lg:w-64'} bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 transform transition-all duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0
-      ${isOpen ? 'translate-x-0' : '-translate-x-full'}
-    `}>
+    <aside 
+      id="sidebar-menu"
+      className={`
+        fixed inset-y-0 left-0 z-50 w-64 ${isCollapsed ? 'lg:w-20' : 'lg:w-64'} bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 transform transition-all duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0
+        ${isOpen ? 'translate-x-0' : '-translate-x-full'}
+      `}
+      aria-label="Main navigation"
+      aria-hidden={!isOpen && window.innerWidth < 1024}
+    >
       <div className="flex flex-col h-full">
         <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
           <div className={`flex items-center justify-between flex-shrink-0 px-4 ${isCollapsed ? 'lg:justify-center lg:px-0 pt-4' : 'pt-5'} pb-4 lg:hidden`}>
@@ -69,12 +73,16 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isOpen, isCo
               onClick={onClose}
               className="lg:hidden p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               title="Close Menu"
+              aria-label="Close sidebar menu"
             >
               <ChevronLeft className="h-6 w-6" />
             </button>
           </div>
 
-          <nav className="mt-8 flex-1 px-2 space-y-1">
+          <nav 
+            className="mt-8 flex-1 px-2 space-y-1"
+            aria-label="Dashboard navigation"
+          >
             {filteredMenuItems.map((item) => {
               const Icon = item.icon;
               const isActive = activeTab === item.id;
@@ -95,10 +103,14 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isOpen, isCo
                       : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white'
                     }
                   `}
+                  aria-label={`Navigate to ${item.label}`}
+                  aria-current={isActive ? "page" : undefined}
+                  title={item.label}
                 >
                   <Icon
                     className={`flex-shrink-0 h-5 w-5 mr-3 ${isCollapsed ? 'lg:mr-0 lg:mx-auto' : ''} ${isActive ? 'text-primary-500' : 'text-gray-400 group-hover:text-gray-500'
                       }`}
+                    aria-hidden="true"
                   />
                   <span className={`${isCollapsed ? 'lg:hidden' : ''}`}>{item.label}</span>
                 </button>
@@ -109,7 +121,10 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isOpen, isCo
 
         <div className="flex-shrink-0 flex border-t border-gray-200 dark:border-gray-700 p-4">
           <div className={`flex items-center w-full ${isCollapsed ? 'lg:justify-center lg:px-0' : ''}`}>
-            <div className="h-10 w-10 bg-primary-500 rounded-full flex items-center justify-center flex-shrink-0">
+            <div 
+              className="h-10 w-10 bg-primary-500 rounded-full flex items-center justify-center flex-shrink-0"
+              aria-label={`${currentUser?.name}'s profile avatar`}
+            >
               <span className="text-white font-medium text-sm">
                 {currentUser?.name.split(' ').map(n => n[0]).join('').toUpperCase()}
               </span>
