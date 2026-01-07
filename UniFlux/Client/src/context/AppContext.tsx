@@ -26,10 +26,13 @@ interface AppContextType {
   // Actions
   addStudent: (student: Omit<Student, 'id'>) => Promise<void>;
   updateStudent: (id: string, student: Partial<Student>) => Promise<void>;
+  deleteStudent: (id: string) => Promise<void>;
   addTeacher: (teacher: Omit<Teacher, 'id'>) => Promise<void>;
   updateTeacher: (id: string, teacher: Partial<Teacher>) => Promise<void>;
+  deleteTeacher: (id: string) => Promise<void>;
   addSubject: (subject: Omit<Subject, 'id'>) => Promise<void>;
   updateSubject: (id: string, subject: Partial<Subject>) => Promise<void>;
+  deleteSubject: (id: string) => Promise<void>;
   markAttendance: (studentId: string, subjectId: string, date: string, status: 'present' | 'absent') => Promise<void>;
   updateMarks: (studentId: string, subjectId: string, internal: number, external: number) => Promise<void>;
   addGrievance: (grievance: Omit<Grievance, 'id' | 'createdAt'>) => Promise<void>;
@@ -482,6 +485,26 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   };
 
+  const deleteStudent = async (id: string) => {
+    try {
+      const token = localStorage.getItem('campuscore_token');
+      if (!token) return;
+      
+      const response = await fetch(`${API_BASE_URL}/students/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        setStudents(prev => prev.filter(s => s.id !== id));
+      }
+    } catch (error) {
+      console.error('Error deleting student:', error);
+    }
+  };
+
   const addTeacher = async (teacher: Omit<Teacher, 'id'>) => {
     try {
       const token = localStorage.getItem('campuscore_token');
@@ -528,6 +551,26 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   };
 
+  const deleteTeacher = async (id: string) => {
+    try {
+      const token = localStorage.getItem('campuscore_token');
+      if (!token) return;
+      
+      const response = await fetch(`${API_BASE_URL}/teachers/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        setTeachers(prev => prev.filter(t => t.id !== id));
+      }
+    } catch (error) {
+      console.error('Error deleting teacher:', error);
+    }
+  };
+
   const addSubject = async (subject: Omit<Subject, 'id'>) => {
     try {
       const token = localStorage.getItem('campuscore_token');
@@ -571,6 +614,26 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       }
     } catch (error) {
       console.error('Error updating subject:', error);
+    }
+  };
+
+  const deleteSubject = async (id: string) => {
+    try {
+      const token = localStorage.getItem('campuscore_token');
+      if (!token) return;
+      
+      const response = await fetch(`${API_BASE_URL}/subjects/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        setSubjects(prev => prev.filter(s => s.id !== id));
+      }
+    } catch (error) {
+      console.error('Error deleting subject:', error);
     }
   };
 

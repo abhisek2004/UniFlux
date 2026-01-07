@@ -1,10 +1,21 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
-import { Users, GraduationCap, BookOpen, TrendingUp, Award, UserCheck, Settings, MessageSquare } from 'lucide-react';
+import { Users, GraduationCap, BookOpen, TrendingUp, Award, UserCheck, Settings, MessageSquare, RefreshCw } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from 'recharts';
+import SkeletonStats from '../Common/SkeletonStats';
 
 const HODDashboard: React.FC = () => {
   const { currentUser, students, teachers, subjects, attendance, marks, grievances, notices } = useApp();
+  const [isLoading, setIsLoading] = useState(true);
+  const [isChartLoading, setIsChartLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+      setIsChartLoading(false);
+    }, 1200);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Filter data for current department
   const departmentStudents = students.filter(s => s.department === currentUser?.department);
@@ -79,14 +90,24 @@ const HODDashboard: React.FC = () => {
   return (
     <div className="space-y-6 animate-fade-in">
       {/* Welcome Section */}
-      <div className="bg-gradient-to-r from-purple-500 to-indigo-600 rounded-xl p-6 text-white">
+      <div 
+        className="bg-gradient-to-r from-purple-500 to-indigo-600 rounded-xl p-6 text-white"
+        role="region"
+        aria-label="Department welcome section"
+      >
         <h1 className="text-2xl font-bold mb-2">Welcome back, {currentUser?.name}!</h1>
         <p className="opacity-90">Department overview and management dashboard for {currentUser?.department} Department.</p>
         <div className="mt-4 flex items-center space-x-4">
-          <div className="bg-white/20 rounded-lg px-3 py-1">
+          <div 
+            className="bg-white/20 rounded-lg px-3 py-1"
+            aria-label={`Department: ${currentUser?.department}`}
+          >
             <span className="text-sm">Department: {currentUser?.department}</span>
           </div>
-          <div className="bg-white/20 rounded-lg px-3 py-1">
+          <div 
+            className="bg-white/20 rounded-lg px-3 py-1"
+            aria-label="Role: Head of Department"
+          >
             <span className="text-sm">Role: Head of Department</span>
           </div>
         </div>
@@ -97,14 +118,19 @@ const HODDashboard: React.FC = () => {
         {stats.map((stat, index) => {
           const Icon = stat.icon;
           return (
-            <div key={index} className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-gray-700">
+            <div 
+              key={index} 
+              className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-gray-700"
+              role="region"
+              aria-label={`${stat.title} department statistics`}
+            >
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{stat.title}</p>
                   <p className="text-2xl font-bold text-gray-900 dark:text-white">{stat.value}</p>
                   <p className="text-sm text-green-600 mt-1">{stat.change} from last month</p>
                 </div>
-                <div className={`p-3 rounded-lg ${stat.color}`}>
+                <div className={`p-3 rounded-lg ${stat.color}`} aria-hidden="true">
                   <Icon className="h-6 w-6 text-white" />
                 </div>
               </div>
@@ -116,8 +142,21 @@ const HODDashboard: React.FC = () => {
       {/* Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Subject Performance */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-gray-700">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Subject Performance Overview</h3>
+        <div 
+          className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-gray-700"
+          role="region"
+          aria-label="Subject performance overview chart"
+        >
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Subject Performance Overview</h3>
+            <button
+              className="p-2 rounded-lg text-gray-500 hover:text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-300 transition-colors"
+              aria-label="Refresh subject performance data"
+              title="Refresh data"
+            >
+              <RefreshCw className="h-4 w-4" />
+            </button>
+          </div>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={subjectPerformance}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -130,7 +169,11 @@ const HODDashboard: React.FC = () => {
         </div>
 
         {/* Grade Distribution */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-gray-700">
+        <div 
+          className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-gray-700"
+          role="region"
+          aria-label="Grade distribution chart"
+        >
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Grade Distribution</h3>
           {gradeDistribution.length > 0 ? (
             <ResponsiveContainer width="100%" height={300}>
@@ -151,14 +194,21 @@ const HODDashboard: React.FC = () => {
               </PieChart>
             </ResponsiveContainer>
           ) : (
-            <div className="flex items-center justify-center h-64 text-gray-500">
+            <div 
+              className="flex items-center justify-center h-64 text-gray-500"
+              aria-label="No grades data available"
+            >
               <p>No grades data available</p>
             </div>
           )}
         </div>
 
         {/* Performance Trend */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-gray-700 lg:col-span-2">
+        <div 
+          className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-gray-700 lg:col-span-2"
+          role="region"
+          aria-label="Department performance trend chart"
+        >
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Department Performance Trend</h3>
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={performanceTrend}>
@@ -176,13 +226,21 @@ const HODDashboard: React.FC = () => {
       {/* Department Overview */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Teachers Overview */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-gray-700">
+        <div 
+          className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-gray-700"
+          role="region"
+          aria-label="Department teachers list"
+        >
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Department Teachers</h3>
           <div className="space-y-3">
             {departmentTeachers.map(teacher => {
               const teacherSubjects = departmentSubjects.filter(s => s.teacherId === teacher.id);
               return (
-                <div key={teacher.id} className="p-4 rounded-lg bg-gray-50 dark:bg-gray-700">
+                <div 
+                  key={teacher.id} 
+                  className="p-4 rounded-lg bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
+                  role="listitem"
+                >
                   <div className="flex items-center justify-between">
                     <div>
                       <h4 className="font-medium text-gray-900 dark:text-white">{teacher.name}</h4>
@@ -203,14 +261,22 @@ const HODDashboard: React.FC = () => {
         </div>
 
         {/* Quick Actions & Alerts */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-gray-700">
+        <div 
+          className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-gray-700"
+          role="region"
+          aria-label="Quick actions and alerts"
+        >
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Quick Actions & Alerts</h3>
           <div className="space-y-4">
             {/* Pending Grievances Alert */}
             {pendingGrievances > 0 && (
-              <div className="p-4 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
+              <div 
+                className="p-4 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800"
+                role="alert"
+                aria-label={`${pendingGrievances} pending grievances require attention`}
+              >
                 <div className="flex items-center space-x-3">
-                  <MessageSquare className="h-5 w-5 text-red-600" />
+                  <MessageSquare className="h-5 w-5 text-red-600" aria-hidden="true" />
                   <div>
                     <p className="text-sm font-medium text-red-800 dark:text-red-200">
                       {pendingGrievances} Pending Grievances
@@ -223,9 +289,13 @@ const HODDashboard: React.FC = () => {
 
             {/* Low Attendance Alert */}
             {attendancePercentage < 75 && (
-              <div className="p-4 rounded-lg bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800">
+              <div 
+                className="p-4 rounded-lg bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800"
+                role="alert"
+                aria-label={`Low department attendance: ${attendancePercentage}%`}
+              >
                 <div className="flex items-center space-x-3">
-                  <UserCheck className="h-5 w-5 text-yellow-600" />
+                  <UserCheck className="h-5 w-5 text-yellow-600" aria-hidden="true" />
                   <div>
                     <p className="text-sm font-medium text-yellow-800 dark:text-yellow-200">
                       Low Department Attendance
@@ -238,12 +308,20 @@ const HODDashboard: React.FC = () => {
 
             {/* Quick Action Buttons */}
             <div className="grid grid-cols-2 gap-3">
-              <button className="p-3 rounded-lg bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors">
-                <Settings className="h-5 w-5 text-blue-600 mx-auto mb-1" />
+              <button 
+                className="p-3 rounded-lg bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors"
+                aria-label="Open department settings"
+                title="Department settings"
+              >
+                <Settings className="h-5 w-5 text-blue-600 mx-auto mb-1" aria-hidden="true" />
                 <p className="text-xs text-blue-800 dark:text-blue-200">Settings</p>
               </button>
-              <button className="p-3 rounded-lg bg-green-50 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-900/30 transition-colors">
-                <TrendingUp className="h-5 w-5 text-green-600 mx-auto mb-1" />
+              <button 
+                className="p-3 rounded-lg bg-green-50 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-900/30 transition-colors"
+                aria-label="Generate department reports"
+                title="View reports"
+              >
+                <TrendingUp className="h-5 w-5 text-green-600 mx-auto mb-1" aria-hidden="true" />
                 <p className="text-xs text-green-800 dark:text-green-200">Reports</p>
               </button>
             </div>
@@ -252,11 +330,26 @@ const HODDashboard: React.FC = () => {
       </div>
 
       {/* Recent Activity */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-gray-700">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Recent Department Activity</h3>
+      <div 
+        className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-gray-700"
+        role="region"
+        aria-label="Recent department activity"
+      >
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Recent Department Activity</h3>
+          <button
+            className="text-sm text-primary-600 hover:text-primary-700 font-medium"
+            aria-label="View all department activity"
+          >
+            View All →
+          </button>
+        </div>
         <div className="space-y-4">
-          <div className="flex items-center space-x-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-700">
-            <div className="h-8 w-8 bg-green-500 rounded-full flex items-center justify-center">
+          <div className="flex items-center space-x-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
+            <div 
+              className="h-8 w-8 bg-green-500 rounded-full flex items-center justify-center"
+              aria-label="New student enrollment activity"
+            >
               <Users className="h-4 w-4 text-white" />
             </div>
             <div>
@@ -265,8 +358,11 @@ const HODDashboard: React.FC = () => {
             </div>
             <span className="text-xs text-gray-500 dark:text-gray-400">2 hours ago</span>
           </div>
-          <div className="flex items-center space-x-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-700">
-            <div className="h-8 w-8 bg-blue-500 rounded-full flex items-center justify-center">
+          <div className="flex items-center space-x-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
+            <div 
+              className="h-8 w-8 bg-blue-500 rounded-full flex items-center justify-center"
+              aria-label="Results approved activity"
+            >
               <Award className="h-4 w-4 text-white" />
             </div>
             <div>
@@ -275,8 +371,11 @@ const HODDashboard: React.FC = () => {
             </div>
             <span className="text-xs text-gray-500 dark:text-gray-400">5 hours ago</span>
           </div>
-          <div className="flex items-center space-x-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-700">
-            <div className="h-8 w-8 bg-purple-500 rounded-full flex items-center justify-center">
+          <div className="flex items-center space-x-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
+            <div 
+              className="h-8 w-8 bg-purple-500 rounded-full flex items-center justify-center"
+              aria-label="New subject assigned activity"
+            >
               <BookOpen className="h-4 w-4 text-white" />
             </div>
             <div>
