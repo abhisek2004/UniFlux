@@ -29,6 +29,7 @@ import ReportsManagement from './components/Reports/ReportsManagement';
 import SettingsManagement from './components/Settings/SettingsManagement';
 import AcademicCalendarPage from './components/AcademicCalendar/AcademicCalendarPage';
 import UserFeedback from './components/Feedback/UserFeedback';
+import ScrollToTop from "./components/ScrollToTop"
 
 // Footer Pages
 import PrivacyPolicy from './components/Footer/PrivacyPolicy';
@@ -85,6 +86,7 @@ function App() {
         {/* 404 Page - This should be at the very end */}
         <Route path="*" element={<NotFound />} />
       </Routes>
+      <ScrollToTop />
     </Router>
   );
 }
