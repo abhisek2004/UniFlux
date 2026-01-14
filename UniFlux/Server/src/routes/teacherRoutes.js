@@ -1,16 +1,29 @@
 import express from "express";
 import { 
-  getTeachers, 
-  getTeacherById, 
-  createTeacher, 
-  updateTeacher, 
-  deleteTeacher 
-} from "../controllers/teacherController.js";
-import protect from "../middleware/authMiddleware.js";
+  getAllTeachers,
+  getTeacher,
+  createTeacher,
+  updateTeacher,
+  deleteTeacher,
+  getTeacherSubjects,
+  getTeacherWorkload
+} from "../controllers/teacher.controller.js";
+import { protect, authorize } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-router.route("/").get(protect, getTeachers).post(protect, createTeacher);
-router.route("/:id").get(protect, getTeacherById).put(protect, updateTeacher).delete(protect, deleteTeacher);
+// Teacher CRUD routes
+router.route("/")
+  .get(protect, authorize("admin", "teacher"), getAllTeachers)
+  .post(protect, authorize("admin"), createTeacher);
+
+router.route("/:id")
+  .get(protect, getTeacher)
+  .put(protect, authorize("admin", "teacher"), updateTeacher)
+  .delete(protect, authorize("admin"), deleteTeacher);
+
+// Additional teacher routes
+router.get("/:id/subjects", protect, getTeacherSubjects);
+router.get("/:id/workload", protect, authorize("admin", "teacher"), getTeacherWorkload);
 
 export default router;

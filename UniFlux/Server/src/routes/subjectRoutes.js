@@ -1,16 +1,29 @@
 import express from "express";
 import { 
-  getSubjects, 
-  getSubjectById, 
-  createSubject, 
-  updateSubject, 
-  deleteSubject 
-} from "../controllers/subjectController.js";
-import protect from "../middleware/authMiddleware.js";
+  getAllSubjects,
+  getSubject,
+  createSubject,
+  updateSubject,
+  deleteSubject,
+  getSubjectStudents,
+  assignTeacher
+} from "../controllers/subject.controller.js";
+import { protect, authorize } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-router.route("/").get(protect, getSubjects).post(protect, createSubject);
-router.route("/:id").get(protect, getSubjectById).put(protect, updateSubject).delete(protect, deleteSubject);
+// Subject CRUD routes
+router.route("/")
+  .get(protect, getAllSubjects)
+  .post(protect, authorize("admin"), createSubject);
+
+router.route("/:id")
+  .get(protect, getSubject)
+  .put(protect, authorize("admin"), updateSubject)
+  .delete(protect, authorize("admin"), deleteSubject);
+
+// Additional subject routes
+router.get("/:id/students", protect, getSubjectStudents);
+router.put("/:id/assign-teacher", protect, authorize("admin"), assignTeacher);
 
 export default router;

@@ -1,0 +1,238 @@
+### UniFlux API Testing - CRUD Operations
+### Use REST Client extension in VS Code to run these requests
+
+### Variables
+@baseUrl = http://localhost:5000
+@token = YOUR_JWT_TOKEN_HERE
+
+### ============================================================
+### 1. AUTHENTICATION
+### ============================================================
+
+### Login as Admin
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@uniflux.edu",
+  "password": "password123"
+}
+
+### Login as Teacher
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "rahul.mehra@uniflux.edu",
+  "password": "password123"
+}
+
+### Login as Student
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "amit.das@student.uniflux.edu",
+  "password": "password123"
+}
+
+### ============================================================
+### 2. STUDENT APIs
+### ============================================================
+
+### Get All Students (with pagination)
+GET {{baseUrl}}/api/students?page=1&limit=10
+Authorization: Bearer {{token}}
+
+### Get All Students (with search)
+GET {{baseUrl}}/api/students?search=Amit
+Authorization: Bearer {{token}}
+
+### Get All Students (with filters)
+GET {{baseUrl}}/api/students?semester=5&department=CSE
+Authorization: Bearer {{token}}
+
+### Get Single Student
+GET {{baseUrl}}/api/students/STUDENT_ID_HERE
+Authorization: Bearer {{token}}
+
+### Create New Student
+POST {{baseUrl}}/api/students
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Test Student",
+  "email": "test.student@uniflux.edu",
+  "password": "student123",
+  "rollNumber": "22CSE006",
+  "registrationNo": "REG2022CSE006",
+  "department": "CSE",
+  "semester": 5
+}
+
+### Update Student
+PUT {{baseUrl}}/api/students/STUDENT_ID_HERE
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "semester": 6,
+  "cgpa": 9.0
+}
+
+### Delete Student
+DELETE {{baseUrl}}/api/students/STUDENT_ID_HERE
+Authorization: Bearer {{token}}
+
+### ============================================================
+### 3. TEACHER APIs
+### ============================================================
+
+### Get All Teachers
+GET {{baseUrl}}/api/teachers?page=1&limit=10
+Authorization: Bearer {{token}}
+
+### Get All Teachers (with search)
+GET {{baseUrl}}/api/teachers?search=Rahul
+Authorization: Bearer {{token}}
+
+### Get Single Teacher
+GET {{baseUrl}}/api/teachers/TEACHER_ID_HERE
+Authorization: Bearer {{token}}
+
+### Create New Teacher
+POST {{baseUrl}}/api/teachers
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Dr. Test Teacher",
+  "email": "test.teacher@uniflux.edu",
+  "password": "teacher123",
+  "employeeId": "EMP005",
+  "department": "CSE",
+  "qualification": "Ph.D. in Software Engineering",
+  "specialization": "AI, Machine Learning"
+}
+
+### Update Teacher
+PUT {{baseUrl}}/api/teachers/TEACHER_ID_HERE
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "qualification": "Ph.D. in Artificial Intelligence",
+  "experience": 11
+}
+
+### Delete Teacher
+DELETE {{baseUrl}}/api/teachers/TEACHER_ID_HERE
+Authorization: Bearer {{token}}
+
+### Get Teacher Subjects
+GET {{baseUrl}}/api/teachers/TEACHER_ID_HERE/subjects
+Authorization: Bearer {{token}}
+
+### Get Teacher Workload
+GET {{baseUrl}}/api/teachers/TEACHER_ID_HERE/workload
+Authorization: Bearer {{token}}
+
+### ============================================================
+### 4. SUBJECT APIs
+### ============================================================
+
+### Get All Subjects
+GET {{baseUrl}}/api/subjects?page=1&limit=10
+Authorization: Bearer {{token}}
+
+### Get All Subjects (with search)
+GET {{baseUrl}}/api/subjects?search=Operating
+Authorization: Bearer {{token}}
+
+### Get All Subjects (with filters)
+GET {{baseUrl}}/api/subjects?semester=5&department=CSE
+Authorization: Bearer {{token}}
+
+### Get Single Subject
+GET {{baseUrl}}/api/subjects/SUBJECT_ID_HERE
+Authorization: Bearer {{token}}
+
+### Create New Subject
+POST {{baseUrl}}/api/subjects
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "code": "CS506",
+  "name": "Web Technologies",
+  "semester": 5,
+  "teacherId": "TEACHER_ID_HERE",
+  "teacherName": "Dr. Test Teacher",
+  "department": "CSE",
+  "credits": 4
+}
+
+### Update Subject
+PUT {{baseUrl}}/api/subjects/SUBJECT_ID_HERE
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Advanced Web Technologies",
+  "credits": 5
+}
+
+### Delete Subject
+DELETE {{baseUrl}}/api/subjects/SUBJECT_ID_HERE
+Authorization: Bearer {{token}}
+
+### Get Subject Students
+GET {{baseUrl}}/api/subjects/SUBJECT_ID_HERE/students
+Authorization: Bearer {{token}}
+
+### Assign Teacher to Subject
+PUT {{baseUrl}}/api/subjects/SUBJECT_ID_HERE/assign-teacher
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "teacherId": "NEW_TEACHER_ID_HERE"
+}
+
+### ============================================================
+### 5. HEALTH CHECK
+### ============================================================
+
+### Server Health Check
+GET {{baseUrl}}/
+
+### ============================================================
+### TESTING CHECKLIST
+### ============================================================
+# [ ] Login with admin credentials
+# [ ] Login with teacher credentials
+# [ ] Login with student credentials
+# [ ] Get all students with pagination
+# [ ] Search students by name
+# [ ] Filter students by semester
+# [ ] Create new student
+# [ ] Update student details
+# [ ] Delete student
+# [ ] Get all teachers
+# [ ] Search teachers
+# [ ] Create new teacher
+# [ ] Update teacher
+# [ ] Delete teacher
+# [ ] Get teacher subjects
+# [ ] Get teacher workload
+# [ ] Get all subjects
+# [ ] Search subjects
+# [ ] Filter subjects by semester
+# [ ] Create new subject
+# [ ] Update subject
+# [ ] Delete subject
+# [ ] Get students enrolled in subject
+# [ ] Assign teacher to subject
+# [ ] Test role-based access control
+# [ ] Test error handling

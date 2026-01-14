@@ -8,6 +8,7 @@ import attendanceRoutes from "./routes/attendanceRoutes.js";
 import marksRoutes from "./routes/marksRoutes.js";
 import grievanceRoutes from "./routes/grievanceRoutes.js";
 import noticeRoutes from "./routes/noticeRoutes.js";
+import { errorHandler } from "./middleware/error.middleware.js";
 
 const app = express();
 
@@ -30,5 +31,8 @@ app.use("/api/notices", noticeRoutes);
 app.get("/", (req, res) => {
   res.status(200).json({ message: "Server is running 🚀" });
 });
+
+// Error handler (must be last middleware)
+app.use(errorHandler);
 
 export default app;
