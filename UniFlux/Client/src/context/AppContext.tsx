@@ -40,22 +40,15 @@ interface AppContextType {
   // Actions
   addStudent: (student: Omit<Student, 'id'>) => Promise<void>;
   updateStudent: (id: string, student: Partial<Student>) => Promise<void>;
+  deleteStudent: (id: string) => Promise<void>;
   addTeacher: (teacher: Omit<Teacher, 'id'>) => Promise<void>;
   updateTeacher: (id: string, teacher: Partial<Teacher>) => Promise<void>;
+  deleteTeacher: (id: string) => Promise<void>;
   addSubject: (subject: Omit<Subject, 'id'>) => Promise<void>;
   updateSubject: (id: string, subject: Partial<Subject>) => Promise<void>;
-  markAttendance: (
-    studentId: string,
-    subjectId: string,
-    date: string,
-    status: 'present' | 'absent'
-  ) => Promise<void>;
-  updateMarks: (
-    studentId: string,
-    subjectId: string,
-    internal: number,
-    external: number
-  ) => Promise<void>;
+  deleteSubject: (id: string) => Promise<void>;
+  markAttendance: (studentId: string, subjectId: string, date: string, status: 'present' | 'absent') => Promise<void>;
+  updateMarks: (studentId: string, subjectId: string, internal: number, external: number) => Promise<void>;
   addGrievance: (grievance: Omit<Grievance, 'id' | 'createdAt'>) => Promise<void>;
   updateGrievance: (id: string, updates: Partial<Grievance>) => Promise<void>;
   addNotice: (notice: Omit<Notice, 'id' | 'createdAt'>) => Promise<void>;
@@ -167,8 +160,344 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         return true;
       }
       return false;
-    } catch {
-      return false;
+    }
+  };
+
+  const addStudent = async (student: Omit<Student, 'id'>) => {
+    try {
+      const token = localStorage.getItem('campuscore_token');
+      if (!token) return;
+      
+      const response = await fetch(`${API_BASE_URL}/students`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(student),
+      });
+
+      if (response.ok) {
+        const newStudent = await response.json();
+        setStudents(prev => [...prev, newStudent]);
+      }
+    } catch (error) {
+      console.error('Error adding student:', error);
+    }
+  };
+
+  const updateStudent = async (id: string, updates: Partial<Student>) => {
+    try {
+      const token = localStorage.getItem('campuscore_token');
+      if (!token) return;
+      
+      const response = await fetch(`${API_BASE_URL}/students/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(updates),
+      });
+
+      if (response.ok) {
+        const updatedStudent = await response.json();
+        setStudents(prev => prev.map(s => s.id === id ? updatedStudent : s));
+      }
+    } catch (error) {
+      console.error('Error updating student:', error);
+    }
+  };
+
+  const deleteStudent = async (id: string) => {
+    try {
+      const token = localStorage.getItem('campuscore_token');
+      if (!token) return;
+      
+      const response = await fetch(`${API_BASE_URL}/students/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        setStudents(prev => prev.filter(s => s.id !== id));
+      }
+    } catch (error) {
+      console.error('Error deleting student:', error);
+    }
+  };
+
+  const addTeacher = async (teacher: Omit<Teacher, 'id'>) => {
+    try {
+      const token = localStorage.getItem('campuscore_token');
+      if (!token) return;
+      
+      const response = await fetch(`${API_BASE_URL}/teachers`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(teacher),
+      });
+
+      if (response.ok) {
+        const newTeacher = await response.json();
+        setTeachers(prev => [...prev, newTeacher]);
+      }
+    } catch (error) {
+      console.error('Error adding teacher:', error);
+    }
+  };
+
+  const updateTeacher = async (id: string, updates: Partial<Teacher>) => {
+    try {
+      const token = localStorage.getItem('campuscore_token');
+      if (!token) return;
+      
+      const response = await fetch(`${API_BASE_URL}/teachers/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(updates),
+      });
+
+      if (response.ok) {
+        const updatedTeacher = await response.json();
+        setTeachers(prev => prev.map(t => t.id === id ? updatedTeacher : t));
+      }
+    } catch (error) {
+      console.error('Error updating teacher:', error);
+    }
+  };
+
+  const deleteTeacher = async (id: string) => {
+    try {
+      const token = localStorage.getItem('campuscore_token');
+      if (!token) return;
+      
+      const response = await fetch(`${API_BASE_URL}/teachers/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        setTeachers(prev => prev.filter(t => t.id !== id));
+      }
+    } catch (error) {
+      console.error('Error deleting teacher:', error);
+    }
+  };
+
+  const addSubject = async (subject: Omit<Subject, 'id'>) => {
+    try {
+      const token = localStorage.getItem('campuscore_token');
+      if (!token) return;
+      
+      const response = await fetch(`${API_BASE_URL}/subjects`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(subject),
+      });
+
+      if (response.ok) {
+        const newSubject = await response.json();
+        setSubjects(prev => [...prev, newSubject]);
+      }
+    } catch (error) {
+      console.error('Error adding subject:', error);
+    }
+  };
+
+  const updateSubject = async (id: string, updates: Partial<Subject>) => {
+    try {
+      const token = localStorage.getItem('campuscore_token');
+      if (!token) return;
+      
+      const response = await fetch(`${API_BASE_URL}/subjects/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(updates),
+      });
+
+      if (response.ok) {
+        const updatedSubject = await response.json();
+        setSubjects(prev => prev.map(s => s.id === id ? updatedSubject : s));
+      }
+    } catch (error) {
+      console.error('Error updating subject:', error);
+    }
+  };
+
+  const deleteSubject = async (id: string) => {
+    try {
+      const token = localStorage.getItem('campuscore_token');
+      if (!token) return;
+      
+      const response = await fetch(`${API_BASE_URL}/subjects/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        setSubjects(prev => prev.filter(s => s.id !== id));
+      }
+    } catch (error) {
+      console.error('Error deleting subject:', error);
+    }
+  };
+
+  const markAttendance = async (studentId: string, subjectId: string, date: string, status: 'present' | 'absent') => {
+    try {
+      const token = localStorage.getItem('campuscore_token');
+      if (!token) return;
+      
+      // Find the subject to get the teacherId
+      const subject = subjects.find(s => s.id === subjectId);
+      
+      const response = await fetch(`${API_BASE_URL}/attendance`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          studentId,
+          subjectId,
+          date,
+          status,
+          teacherId: subject?.teacherId || ''
+        }),
+      });
+
+      if (response.ok) {
+        const newAttendance = await response.json();
+        setAttendance(prev => [...prev, newAttendance]);
+      }
+    } catch (error) {
+      console.error('Error marking attendance:', error);
+    }
+  };
+
+  const updateMarks = async (studentId: string, subjectId: string, internal: number, external: number) => {
+    try {
+      const token = localStorage.getItem('campuscore_token');
+      if (!token) return;
+      
+      // Calculate total and grade
+      const total = internal + external;
+      let grade = 'F';
+      if (total >= 90) grade = 'A+'
+      else if (total >= 80) grade = 'A'
+      else if (total >= 70) grade = 'B+'
+      else if (total >= 60) grade = 'B'
+      else if (total >= 50) grade = 'C'
+      else if (total >= 40) grade = 'D'
+
+      const response = await fetch(`${API_BASE_URL}/marks`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          studentId,
+          subjectId,
+          internalMarks: internal,
+          externalMarks: external,
+          semester: 5
+        }),
+      });
+
+      if (response.ok) {
+        const newMarks = await response.json();
+        setMarks(prev => [...prev, newMarks]);
+      }
+    } catch (error) {
+      console.error('Error updating marks:', error);
+    }
+  };
+
+  const addGrievance = async (grievance: Omit<Grievance, 'id' | 'createdAt'>) => {
+    try {
+      const token = localStorage.getItem('campuscore_token');
+      if (!token) return;
+      
+      const response = await fetch(`${API_BASE_URL}/grievances`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(grievance),
+      });
+
+      if (response.ok) {
+        const newGrievance = await response.json();
+        setGrievances(prev => [...prev, newGrievance]);
+      }
+    } catch (error) {
+      console.error('Error adding grievance:', error);
+    }
+  };
+
+  const updateGrievance = async (id: string, updates: Partial<Grievance>) => {
+    try {
+      const token = localStorage.getItem('campuscore_token');
+      if (!token) return;
+      
+      const response = await fetch(`${API_BASE_URL}/grievances/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(updates),
+      });
+
+      if (response.ok) {
+        const updatedGrievance = await response.json();
+        setGrievances(prev => prev.map(g => g.id === id ? updatedGrievance : g));
+      }
+    } catch (error) {
+      console.error('Error updating grievance:', error);
+    }
+  };
+
+  const addNotice = async (notice: Omit<Notice, 'id' | 'createdAt'>) => {
+    try {
+      const token = localStorage.getItem('campuscore_token');
+      if (!token) return;
+      
+      const response = await fetch(`${API_BASE_URL}/notices`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(notice),
+      });
+
+      if (response.ok) {
+        const newNotice = await response.json();
+        setNotices(prev => [...prev, newNotice]);
+      }
+    } catch (error) {
+      console.error('Error adding notice:', error);
     }
   };
 

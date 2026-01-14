@@ -45,6 +45,9 @@ import FacultyDirectoryPage from './components/FacultyDirectory/FacultyDirectory
 import LibraryPage from './components/Library/LibraryPage';
 import CareerServicesPage from './components/CareerServices/CareerServicesPage';
 
+// Import the 404 Page
+import NotFound from './components/NotFound';
+
 function App() {
   const { currentUser } = useApp();
 
@@ -73,11 +76,14 @@ function App() {
         <Route path="/register/:role" element={<RegistrationForm />} />
         <Route path="/superadmin" element={<SuperAdminLogin />} />
         
-        {/* Main App Route */}
+        {/* Main App Route - Accessible when logged in */}
         <Route path="/*" element={currentUser ? <MainApp /> : <RoleSelection />} />
         
-        {/* Redirect from root to role selection */}
-        <Route path="/" element={<RoleSelection />} />
+        {/* Root path - redirect based on auth status */}
+        <Route path="/" element={currentUser ? <MainApp /> : <RoleSelection />} />
+        
+        {/* 404 Page - This should be at the very end */}
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
   );
@@ -89,121 +95,60 @@ const MainApp: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
-const renderContent = () => {
-  switch (activeTab) {
-    case 'dashboard':
-      switch (currentUser?.role) {
-        case 'superadmin':
-          return <SuperAdminDashboard />;
-        case 'hod':
-          return <HODDashboard />;
-        case 'teacher':
-          return <TeacherDashboard />;
-        case 'student':
-          return <StudentDashboard />;
-        default:
-          return <SuperAdminDashboard />;
-      }
-
-    case 'students':
-      return (
-        <ProtectedRoute allowedRoles={['admin', 'superadmin', 'hod']}>
-          <StudentList />
-        </ProtectedRoute>
-      );
-
-    case 'teachers':
-      return (
-        <ProtectedRoute allowedRoles={['admin', 'superadmin']}>
-          <TeacherList />
-        </ProtectedRoute>
-      );
-
-    case 'subjects':
-      return (
-        <ProtectedRoute allowedRoles={['admin', 'superadmin']}>
-          <SubjectList />
-        </ProtectedRoute>
-      );
-
-    case 'attendance':
-      return (
-        <ProtectedRoute allowedRoles={['teacher', 'hod']}>
-          <AttendanceManagement />
-        </ProtectedRoute>
-      );
-
-    case 'marks':
-      return (
-        <ProtectedRoute allowedRoles={['teacher', 'hod']}>
-          <MarksManagement />
-        </ProtectedRoute>
-      );
-
-    case 'timetable':
-      return <TimetableView />;
-
-    case 'reports':
-      return (
-        <ProtectedRoute allowedRoles={['admin', 'superadmin']}>
-          <ReportsManagement />
-        </ProtectedRoute>
-      );
-
-    case 'grievances':
-      return <GrievanceManagement />;
-
-    case 'notices':
-      return <NoticeBoard />;
-
-    case 'settings':
-      return (
-        <ProtectedRoute allowedRoles={['superadmin']}>
-          <SettingsManagement />
-        </ProtectedRoute>
-      );
-
-    case 'user-feedback':
-      return <UserFeedback />;
-
-    case 'academic-calendar':
-      return <AcademicCalendarPage />;
-
-    case 'admissions':
-      return <AdmissionsPage />;
-
-    case 'student-portal':
-      return (
-        <ProtectedRoute allowedRoles={['student']}>
-          <StudentPortalPage />
-        </ProtectedRoute>
-      );
-
-    case 'faculty-directory':
-      return <FacultyDirectoryPage />;
-
-    case 'library':
-      return <LibraryPage />;
-
-    case 'career-services':
-      return <CareerServicesPage />;
-
-    default:
-      return (
-        <div className="text-center py-12">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-            Coming Soon
-          </h2>
-          <p className="text-gray-600 dark:text-gray-400">
-            This feature is under development.
-          </p>
-        </div>
-      );
-  }
-};
-
-  
-     
+  const renderContent = () => {
+    switch (activeTab) {
+      case 'dashboard':
+        switch (currentUser?.role) {
+          case 'superadmin':
+            return <SuperAdminDashboard />;
+          case 'hod':
+            return <HODDashboard />;
+          case 'teacher':
+            return <TeacherDashboard />;
+          case 'student':
+            return <StudentDashboard />;
+          default:
+            return <RoleSelection />; // Redirect to role selection if no role
+        }
+      case 'students':
+        return <StudentList />;
+      case 'teachers':
+        return <TeacherList />;
+      case 'subjects':
+        return <SubjectList />;
+      case 'attendance':
+        return <AttendanceManagement />;
+      case 'marks':
+        return <MarksManagement />;
+      case 'timetable':
+        return <TimetableView />;
+      case 'reports':
+        return <ReportsManagement />;
+      case 'grievances':
+        return <GrievanceManagement />;
+      case 'notices':
+        return <NoticeBoard />;
+      case 'settings':
+        return <SettingsManagement />;
+      case 'user-feedback':
+        return <UserFeedback />;
+      case 'academic-calendar':
+        return <AcademicCalendarPage />;
+      case 'admissions':
+        return <AdmissionsPage />;
+      case 'student-portal':
+        return <StudentPortalPage />;
+      case 'faculty-directory':
+        return <FacultyDirectoryPage />;
+      case 'library':
+        return <LibraryPage />;
+      case 'career-services':
+        return <CareerServicesPage />;
+      default:
+        // If the tab doesn't exist, show 404 within the app layout
+        return <div className="p-8"><NotFound /></div>;
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex">
@@ -216,7 +161,6 @@ const renderContent = () => {
         onClose={() => setSidebarOpen(false)}
       />
 
-
       {/* Sidebar Overlay */}
       {sidebarOpen && (
         <div
@@ -224,6 +168,7 @@ const renderContent = () => {
           onClick={() => setSidebarOpen(false)}
         />
       )}
+      
       {/* Main Content */}
       <div className={`flex-1 flex flex-col transition-all duration-300 ${sidebarCollapsed ? 'lg:ml-0' : 'lg:ml-0'}`}>
         <Header
@@ -250,7 +195,6 @@ const MainAppWithPage: React.FC<{ page: string }> = ({ page }) => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const navigate = useNavigate();
 
-
   const renderContent = () => {
     switch (page) {
       case 'academic-calendar':
@@ -268,7 +212,8 @@ const MainAppWithPage: React.FC<{ page: string }> = ({ page }) => {
       case 'user-feedback':
         return <UserFeedback />;
       default:
-        return <LoginForm />;
+        // If page doesn't exist, show 404
+        return <NotFound />;
     }
   };
 
@@ -288,7 +233,6 @@ const MainAppWithPage: React.FC<{ page: string }> = ({ page }) => {
         onClose={() => setSidebarOpen(false)}
       />
 
-
       {/* Sidebar Overlay */}
       {sidebarOpen && (
         <div
@@ -296,6 +240,7 @@ const MainAppWithPage: React.FC<{ page: string }> = ({ page }) => {
           onClick={() => setSidebarOpen(false)}
         />
       )}
+      
       {/* Main Content */}
       <div className={`flex-1 flex flex-col transition-all duration-300 ${sidebarCollapsed ? 'lg:ml-0' : 'lg:ml-0'}`}>
         <Header
