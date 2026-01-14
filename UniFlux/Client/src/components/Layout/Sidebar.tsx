@@ -15,7 +15,8 @@ import {
   Award,
   Bell,
   ChevronLeft,
-  LayoutGrid
+  LayoutGrid,
+  MessageCircle
 } from 'lucide-react';
 
 
