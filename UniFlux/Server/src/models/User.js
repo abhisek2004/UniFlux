@@ -62,10 +62,6 @@ userSchema.pre('save', async function() {
 
 // Compare password method
 userSchema.methods.comparePassword = async function(candidatePassword) {
-  if (this.isDemo) {
-    // For demo users, we'll use a simple comparison
-    return candidatePassword === this.password;
-  }
   return await bcrypt.compare(candidatePassword, this.password);
 };
 

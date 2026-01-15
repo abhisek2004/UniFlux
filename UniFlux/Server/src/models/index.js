@@ -12,6 +12,9 @@ import Timetable from './Timetable.js';
 import Grievance from './Grievance.js';
 import Notice from './Notice.js';
 import AcademicCalendar from './AcademicCalendar.js';
+import Leave from './Leave.js';
+import LeaveBalance from './LeaveBalance.js';
+import LeavePolicy from './LeavePolicy.js';
 
 export {
   User,
@@ -26,7 +29,10 @@ export {
   Timetable,
   Grievance,
   Notice,
-  AcademicCalendar
+  AcademicCalendar,
+  Leave,
+  LeaveBalance,
+  LeavePolicy
 };
 
 export default {
@@ -42,5 +48,8 @@ export default {
   Timetable,
   Grievance,
   Notice,
-  AcademicCalendar
+  AcademicCalendar,
+  Leave,
+  LeaveBalance,
+  LeavePolicy
 };

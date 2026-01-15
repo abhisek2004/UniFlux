@@ -1,0 +1,475 @@
+### Leave Management System API Tests
+### Base URL
+@baseUrl = http://localhost:5000
+@token = YOUR_JWT_TOKEN_HERE
+
+#######################
+# 1. AUTHENTICATION
+#######################
+
+### Login as Admin
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@uniflux.edu",
+  "password": "password123"
+}
+
+### Login as HOD
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "rajesh.kumar@uniflux.edu",
+  "password": "password123"
+}
+
+### Login as Teacher
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "rahul.mehra@uniflux.edu",
+  "password": "password123"
+}
+
+### Login as Student
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "amit.das@student.uniflux.edu",
+  "password": "password123"
+}
+
+#######################
+# 2. LEAVE POLICY APIs
+#######################
+
+### Get My Leave Policy
+GET {{baseUrl}}/api/leave-policies/my-policy
+Authorization: Bearer {{token}}
+
+### Get All Leave Policies (Admin/HOD)
+GET {{baseUrl}}/api/leave-policies
+Authorization: Bearer {{token}}
+
+### Get Leave Policies with Filters
+GET {{baseUrl}}/api/leave-policies?userType=student&department=CSE&isActive=true
+Authorization: Bearer {{token}}
+
+### Get Single Leave Policy
+GET {{baseUrl}}/api/leave-policies/POLICY_ID_HERE
+Authorization: Bearer {{token}}
+
+### Create Default Leave Policy for Students (Admin only)
+POST {{baseUrl}}/api/leave-policies/create-default
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "userType": "student",
+  "department": "CSE"
+}
+
+### Create Default Leave Policy for Teachers (Admin only)
+POST {{baseUrl}}/api/leave-policies/create-default
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "userType": "teacher",
+  "department": "CSE"
+}
+
+### Create Custom Leave Policy (Admin only)
+POST {{baseUrl}}/api/leave-policies
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "userType": "student",
+  "department": "ECE",
+  "academicYear": "2026-2027",
+  "policies": {
+    "casualLeave": {
+      "quota": 5,
+      "maxConsecutive": 2,
+      "requiresDocument": false,
+      "description": "Casual leave for personal work"
+    },
+    "sickLeave": {
+      "quota": 10,
+      "maxConsecutive": 5,
+      "requiresDocument": true,
+      "documentRequiredAfterDays": 3,
+      "description": "Medical leave"
+    },
+    "emergencyLeave": {
+      "quota": 3,
+      "maxConsecutive": 3,
+      "requiresDocument": true,
+      "description": "Emergency situations"
+    }
+  },
+  "generalRules": {
+    "minimumAttendanceRequired": 75,
+    "maxLeavesPerMonth": 5,
+    "canApplyForPastDates": false,
+    "approvalWorkflow": "hod-only"
+  }
+}
+
+### Update Leave Policy (Admin only)
+PUT {{baseUrl}}/api/leave-policies/POLICY_ID_HERE
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "policies": {
+    "casualLeave": {
+      "quota": 7
+    }
+  },
+  "generalRules": {
+    "maxLeavesPerMonth": 6
+  }
+}
+
+### Initialize Balances for Policy (Admin only)
+POST {{baseUrl}}/api/leave-policies/POLICY_ID_HERE/initialize-balances
+Authorization: Bearer {{token}}
+
+### Deactivate Leave Policy (Admin only)
+PUT {{baseUrl}}/api/leave-policies/POLICY_ID_HERE/deactivate
+Authorization: Bearer {{token}}
+
+### Activate Leave Policy (Admin only)
+PUT {{baseUrl}}/api/leave-policies/POLICY_ID_HERE/activate
+Authorization: Bearer {{token}}
+
+### Delete Leave Policy (Admin only)
+DELETE {{baseUrl}}/api/leave-policies/POLICY_ID_HERE
+Authorization: Bearer {{token}}
+
+#######################
+# 3. LEAVE BALANCE APIs
+#######################
+
+### Get My Leave Balance
+GET {{baseUrl}}/api/leave-balance/my-balance
+Authorization: Bearer {{token}}
+
+### Get User Leave Balance (Admin/HOD)
+GET {{baseUrl}}/api/leave-balance/USER_ID_HERE
+Authorization: Bearer {{token}}
+
+### Get Department Balances (HOD/Admin)
+GET {{baseUrl}}/api/leave-balance/department/CSE
+Authorization: Bearer {{token}}
+
+### Get Low Balance Users (HOD/Admin)
+GET {{baseUrl}}/api/leave-balance/low-balance?threshold=2
+Authorization: Bearer {{token}}
+
+### Get Balance Summary (HOD/Admin)
+GET {{baseUrl}}/api/leave-balance/summary
+Authorization: Bearer {{token}}
+
+### Get Balance Summary for Department (HOD/Admin)
+GET {{baseUrl}}/api/leave-balance/summary?department=CSE
+Authorization: Bearer {{token}}
+
+### Initialize Balances for Department (Admin only)
+POST {{baseUrl}}/api/leave-balance/initialize
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "userType": "student",
+  "department": "CSE",
+  "academicYear": "2026-2027"
+}
+
+### Update User Leave Balance (Admin only)
+PUT {{baseUrl}}/api/leave-balance/USER_ID_HERE
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "casualLeave": {
+    "total": 10,
+    "used": 2
+  },
+  "sickLeave": {
+    "total": 12,
+    "used": 1
+  }
+}
+
+### Reset User Balance to Policy Defaults (Admin only)
+PUT {{baseUrl}}/api/leave-balance/USER_ID_HERE/reset
+Authorization: Bearer {{token}}
+
+#######################
+# 4. LEAVE APPLICATION APIs
+#######################
+
+### Apply for Leave (Student/Teacher)
+POST {{baseUrl}}/api/leaves
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "leaveType": "sick",
+  "startDate": "2026-01-20",
+  "endDate": "2026-01-22",
+  "reason": "Suffering from fever and need rest for quick recovery",
+  "documents": [
+    {
+      "fileName": "medical_certificate.pdf",
+      "fileUrl": "https://example.com/docs/medical_cert.pdf"
+    }
+  ]
+}
+
+### Apply for Casual Leave
+POST {{baseUrl}}/api/leaves
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "leaveType": "casual",
+  "startDate": "2026-01-25",
+  "endDate": "2026-01-25",
+  "reason": "Personal work that needs immediate attention"
+}
+
+### Apply for Emergency Leave
+POST {{baseUrl}}/api/leaves
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "leaveType": "emergency",
+  "startDate": "2026-01-18",
+  "endDate": "2026-01-19",
+  "reason": "Family emergency requiring immediate presence at home",
+  "documents": []
+}
+
+### Get My Leaves
+GET {{baseUrl}}/api/leaves/my-leaves
+Authorization: Bearer {{token}}
+
+### Get My Leaves with Pagination
+GET {{baseUrl}}/api/leaves/my-leaves?page=1&limit=10
+Authorization: Bearer {{token}}
+
+### Get My Leaves with Status Filter
+GET {{baseUrl}}/api/leaves/my-leaves?status=pending
+Authorization: Bearer {{token}}
+
+### Get My Leave Balance
+GET {{baseUrl}}/api/leaves/balance
+Authorization: Bearer {{token}}
+
+### Get All Leaves (Admin/HOD/Teacher)
+GET {{baseUrl}}/api/leaves?page=1&limit=10
+Authorization: Bearer {{token}}
+
+### Get Leaves with Filters
+GET {{baseUrl}}/api/leaves?status=approved&leaveType=sick&department=CSE
+Authorization: Bearer {{token}}
+
+### Get Leaves by Date Range
+GET {{baseUrl}}/api/leaves?startDate=2026-01-01&endDate=2026-01-31
+Authorization: Bearer {{token}}
+
+### Search Leaves by User Name
+GET {{baseUrl}}/api/leaves?search=amit
+Authorization: Bearer {{token}}
+
+### Get Single Leave Details
+GET {{baseUrl}}/api/leaves/LEAVE_ID_HERE
+Authorization: Bearer {{token}}
+
+### Update Pending Leave
+PUT {{baseUrl}}/api/leaves/LEAVE_ID_HERE
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "endDate": "2026-01-23",
+  "reason": "Extended recovery period needed as per doctor's advice"
+}
+
+### Cancel Leave
+DELETE {{baseUrl}}/api/leaves/LEAVE_ID_HERE
+Authorization: Bearer {{token}}
+
+#######################
+# 5. LEAVE APPROVAL APIs
+#######################
+
+### Get Pending Leaves (HOD/Admin)
+GET {{baseUrl}}/api/leaves/pending
+Authorization: Bearer {{token}}
+
+### Approve Leave (HOD/Admin)
+PUT {{baseUrl}}/api/leaves/LEAVE_ID_HERE/approve
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "remarks": "Approved. Take care of your health."
+}
+
+### Reject Leave (HOD/Admin)
+PUT {{baseUrl}}/api/leaves/LEAVE_ID_HERE/reject
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "reason": "Attendance below 75%. Cannot approve additional leaves."
+}
+
+### Get Department Leaves (HOD/Admin)
+GET {{baseUrl}}/api/leaves/department/CSE
+Authorization: Bearer {{token}}
+
+### Get Department Leaves with Pagination
+GET {{baseUrl}}/api/leaves/department/CSE?page=1&limit=20
+Authorization: Bearer {{token}}
+
+#######################
+# 6. LEAVE STATISTICS & REPORTS
+#######################
+
+### Get Leave Statistics (HOD/Admin)
+GET {{baseUrl}}/api/leaves/statistics
+Authorization: Bearer {{token}}
+
+### Get Leave Statistics by Department (Admin)
+GET {{baseUrl}}/api/leaves/statistics?department=CSE
+Authorization: Bearer {{token}}
+
+### Get Leave Statistics by Date Range
+GET {{baseUrl}}/api/leaves/statistics?startDate=2026-01-01&endDate=2026-01-31
+Authorization: Bearer {{token}}
+
+### Get Leave Statistics for Department & Date Range
+GET {{baseUrl}}/api/leaves/statistics?department=CSE&startDate=2026-01-01&endDate=2026-12-31
+Authorization: Bearer {{token}}
+
+#######################
+# 7. TESTING CHECKLIST
+#######################
+
+###
+### Leave Policy Management:
+### [ ] Create default policies for all departments and user types
+### [ ] Update policy quotas and rules
+### [ ] Activate/deactivate policies
+### [ ] Initialize balances from policies
+### [ ] Get applicable policy for users
+###
+### Leave Balance Management:
+### [ ] Check personal leave balance
+### [ ] View department balances (HOD)
+### [ ] Identify low balance users
+### [ ] Generate balance summaries
+### [ ] Reset balances for new academic year
+### [ ] Manual balance adjustments (Admin)
+###
+### Leave Application:
+### [ ] Apply for different leave types (casual, sick, emergency)
+### [ ] Upload documents with leave application
+### [ ] View personal leave history
+### [ ] Update pending leaves
+### [ ] Cancel pending leaves
+### [ ] Check if sufficient balance exists
+###
+### Leave Approval Workflow:
+### [ ] View pending approvals (HOD/Admin)
+### [ ] Approve leaves with remarks
+### [ ] Reject leaves with reason
+### [ ] Auto-deduct from balance on approval
+### [ ] Filter approvals by department
+###
+### Leave Validation:
+### [ ] Validate against policy rules (max consecutive days)
+### [ ] Check document requirements
+### [ ] Validate date ranges
+### [ ] Check attendance threshold
+### [ ] Ensure sufficient leave balance
+### [ ] Prevent past date applications (if restricted)
+###
+### Access Control:
+### [ ] Student can only view/apply own leaves
+### [ ] Teacher can apply leaves and view own
+### [ ] HOD can approve department leaves
+### [ ] Admin can approve all leaves and manage policies
+### [ ] Users can only update/cancel pending leaves
+###
+### Reports & Analytics:
+### [ ] Leave statistics by status
+### [ ] Department-wise leave reports
+### [ ] Leave type distribution
+### [ ] Date range reports
+### [ ] Low balance alerts
+### [ ] Balance summary reports
+###
+
+#######################
+# 8. SAMPLE TEST FLOW
+#######################
+
+###
+### STEP 1: Setup (Admin)
+### 1. Login as admin
+### 2. Create default leave policies for CSE department (students & teachers)
+### 3. Initialize leave balances for all users
+###
+### STEP 2: Check Balance (Student/Teacher)
+### 1. Login as student/teacher
+### 2. Get my leave policy
+### 3. Get my leave balance
+###
+### STEP 3: Apply Leave (Student/Teacher)
+### 1. Apply for sick leave with documents
+### 2. Get my leaves to see pending status
+###
+### STEP 4: Approval (HOD)
+### 1. Login as HOD
+### 2. Get pending leaves
+### 3. Approve/reject leave with remarks
+###
+### STEP 5: Verify (Student/Teacher)
+### 1. Login again as student/teacher
+### 2. Check leave status (should be approved/rejected)
+### 3. Check updated leave balance
+###
+### STEP 6: Reports (Admin/HOD)
+### 1. Get leave statistics
+### 2. Get department leave summary
+### 3. Check low balance users
+###
+
+#######################
+# 9. ERROR SCENARIOS TO TEST
+#######################
+
+###
+### [ ] Apply leave without sufficient balance
+### [ ] Apply leave exceeding max consecutive days
+### [ ] Apply leave without required documents
+### [ ] Apply leave for past dates (when restricted)
+### [ ] Update non-pending leave
+### [ ] Cancel approved leave
+### [ ] Approve leave from different department (HOD)
+### [ ] Apply leave when attendance is low
+### [ ] Create duplicate active policy
+### [ ] Initialize balance without policy
+###

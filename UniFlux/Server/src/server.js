@@ -8,6 +8,9 @@ import attendanceRoutes from "./routes/attendanceRoutes.js";
 import marksRoutes from "./routes/marksRoutes.js";
 import grievanceRoutes from "./routes/grievanceRoutes.js";
 import noticeRoutes from "./routes/noticeRoutes.js";
+import leaveRoutes from "./routes/leave.routes.js";
+import leavePolicyRoutes from "./routes/leavePolicy.routes.js";
+import leaveBalanceRoutes from "./routes/leaveBalance.routes.js";
 import { errorHandler } from "./middleware/error.middleware.js";
 
 const app = express();
@@ -26,6 +29,9 @@ app.use("/api/attendance", attendanceRoutes);
 app.use("/api/marks", marksRoutes);
 app.use("/api/grievances", grievanceRoutes);
 app.use("/api/notices", noticeRoutes);
+app.use("/api/leaves", leaveRoutes);
+app.use("/api/leave-policies", leavePolicyRoutes);
+app.use("/api/leave-balance", leaveBalanceRoutes);
 
 // Health check
 app.get("/", (req, res) => {
