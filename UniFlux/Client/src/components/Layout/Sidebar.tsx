@@ -6,9 +6,7 @@ import {
   GraduationCap,
   BookOpen,
   Calendar,
-  FileText,
   MessageSquare,
-  MessageCircle,
   Settings,
   BarChart3,
   UserCheck,
@@ -16,8 +14,8 @@ import {
   Bell,
   ChevronLeft,
   LayoutGrid,
-  MessageCircle
 } from 'lucide-react';
+import { MessageCircle as MessageCircle } from 'lucide-react';
 
 interface SidebarProps {
   activeTab: string;

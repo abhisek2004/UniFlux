@@ -41,15 +41,12 @@ interface AppContextType {
   addStudent: (student: Omit<Student, 'id'>) => Promise<void>;
   deleteStudent: (id: string) => Promise<void>;
   updateStudent: (id: string, student: Partial<Student>) => Promise<void>;
-  deleteStudent: (id: string) => Promise<void>;
   addTeacher: (teacher: Omit<Teacher, 'id'>) => Promise<void>;
   deleteTeacher: (id: string) => Promise<void>;
   updateTeacher: (id: string, teacher: Partial<Teacher>) => Promise<void>;
-  deleteTeacher: (id: string) => Promise<void>;
   addSubject: (subject: Omit<Subject, 'id'>) => Promise<void>;
   deleteSubject: (id: string) => Promise<void>;
   updateSubject: (id: string, subject: Partial<Subject>) => Promise<void>;
-  deleteSubject: (id: string) => Promise<void>;
   markAttendance: (studentId: string, subjectId: string, date: string, status: 'present' | 'absent') => Promise<void>;
   updateMarks: (studentId: string, subjectId: string, internal: number, external: number) => Promise<void>;
   addGrievance: (grievance: Omit<Grievance, 'id' | 'createdAt'>) => Promise<void>;
@@ -163,9 +160,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         return true;
       }
       return false;
+    } catch {
+      return false;
     }
   };
-
   const addStudent = async (student: Omit<Student, 'id'>) => {
     try {
       const token = localStorage.getItem('campuscore_token');
@@ -533,17 +531,20 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         marks,
         grievances,
         notices,
-        addStudent: async () => {},
-        updateStudent: async () => {},
-        addTeacher: async () => {},
-        updateTeacher: async () => {},
-        addSubject: async () => {},
-        updateSubject: async () => {},
-        markAttendance: async () => {},
-        updateMarks: async () => {},
-        addGrievance: async () => {},
-        updateGrievance: async () => {},
-        addNotice: async () => {},
+        addStudent,
+        deleteStudent,
+        updateStudent,
+        addTeacher,
+        deleteTeacher,
+        updateTeacher,
+        addSubject,
+        deleteSubject,
+        updateSubject,
+        markAttendance,
+        updateMarks,
+        addGrievance,
+        updateGrievance,
+        addNotice,
         darkMode,
         toggleDarkMode,
       }}
