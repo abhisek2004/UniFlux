@@ -31,6 +31,15 @@
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
+
+  img, video, canvas, svg {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  .overflow-y-auto {
+    -webkit-overflow-scrolling: touch;
+  }
 }
 
 /* Custom scrollbar */

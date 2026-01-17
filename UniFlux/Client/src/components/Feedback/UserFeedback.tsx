@@ -209,20 +209,30 @@ const UserFeedback: React.FC = () => {
             </div>
 
             {/* Trust Badges */}
-            <div className="flex flex-wrap justify-center gap-8 opacity-50 grayscale hover:grayscale-0 transition-all">
-                <div className="flex items-center space-x-2">
-                    <MessageCircle className="h-5 w-5" />
-                    <span className="text-sm font-medium">100% Anonymous Option</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                    <Bug className="h-5 w-5" />
-                    <span className="text-sm font-medium">Auto-Bug Ticket Generation</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                    <Lightbulb className="h-5 w-5" />
-                    <span className="text-sm font-medium">Feature Priority System</span>
-                </div>
-            </div>
+            {/* Trust Badges */}
+<div className="flex flex-wrap justify-center gap-8 opacity-50 grayscale hover:grayscale-0 transition-all">
+    <div className="flex items-center space-x-2">
+        <MessageCircle className="h-5 w-5 text-gray-500 dark:text-gray-400" />
+        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            100% Anonymous Option
+        </span>
+    </div>
+
+    <div className="flex items-center space-x-2">
+        <Bug className="h-5 w-5 text-gray-500 dark:text-gray-400" />
+        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            Auto-Bug Ticket Generation
+        </span>
+    </div>
+
+    <div className="flex items-center space-x-2">
+        <Lightbulb className="h-5 w-5 text-gray-500 dark:text-gray-400" />
+        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            Feature Priority System
+        </span>
+    </div>
+</div>
+
         </div>
     );
 };
