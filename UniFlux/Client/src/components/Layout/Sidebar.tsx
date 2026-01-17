@@ -49,15 +49,19 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isOpen, isCo
   );
 
   return (
-    <aside 
-      id="sidebar-menu"
-      className={`
-        fixed inset-y-0 left-0 z-50 w-64 ${isCollapsed ? 'lg:w-20' : 'lg:w-64'} bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 transform transition-all duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0
-        ${isOpen ? 'translate-x-0' : '-translate-x-full'}
-      `}
-      aria-label="Main navigation"
-      aria-hidden={!isOpen && window.innerWidth < 1024}
-    >
+    <aside
+  id="sidebar-menu"
+  className={`
+    fixed inset-y-0 left-0 z-50
+    bg-white dark:bg-gray-800
+    border-r border-gray-200 dark:border-gray-700
+    transition-all duration-300 ease-in-out
+    lg:static lg:translate-x-0 lg:inset-0
+    ${isCollapsed ? 'lg:w-20' : 'lg:w-64'}
+    ${isOpen ? 'translate-x-0' : '-translate-x-full'}
+  `}
+>
+
       <div className="flex flex-col h-full">
         <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
           <div className={`flex items-center justify-between flex-shrink-0 px-4 ${isCollapsed ? 'lg:justify-center lg:px-0 pt-4' : 'pt-5'} pb-4 lg:hidden`}>
@@ -78,43 +82,49 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isOpen, isCo
             </button>
           </div>
 
-          <nav 
-            className="mt-8 flex-1 px-2 space-y-1"
-            aria-label="Dashboard navigation"
-          >
-            {filteredMenuItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = activeTab === item.id;
-              return (
-                <button
-                  key={item.id}
-                  onClick={() => {
-                    if (onNavigate) {
-                      onNavigate(item.route);
-                    } else {
-                      setActiveTab(item.id);
-                    }
-                  }}
-                  className={`
-                    group flex items-center px-2 py-2 text-sm font-medium rounded-md w-full transition-colors
-                    ${isActive
-                      ? 'bg-primary-100 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300'
-                      : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white'
-                    }
-                  `}
-                  aria-label={`Navigate to ${item.label}`}
-                  aria-current={isActive ? "page" : undefined}
-                  title={item.label}
-                >
-                  <Icon
-                    className={`flex-shrink-0 h-5 w-5 mr-3 ${isCollapsed ? 'lg:mr-0 lg:mx-auto' : ''} ${isActive ? 'text-primary-500' : 'text-gray-400 group-hover:text-gray-500'
-                      }`}
-                    aria-hidden="true"
-                  />
-                  <span className={`${isCollapsed ? 'lg:hidden' : ''}`}>{item.label}</span>
-                </button>
-              );
-            })}
+          <nav
+  className={`mt-8 flex-1 space-y-1 ${isCollapsed ? 'lg:px-0' : 'px-2'}`}
+>
+{filteredMenuItems.map((item) => {
+  const Icon = item.icon;
+  const isActive = activeTab === item.id;
+  return (
+    <button
+      key={item.id}
+      onClick={() => {
+        if (onNavigate) {
+          onNavigate(item.route);
+        } else {
+          setActiveTab(item.id);
+        }
+      }}
+      className={`
+        group flex items-center rounded-md w-full transition-colors
+        ${/* Center content when collapsed, otherwise pad left */
+          isCollapsed ? 'justify-center px-0 py-3' : 'px-3 py-2'
+        }
+        ${isActive
+          ? 'bg-primary-100 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300'
+          : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white'
+        }
+      `}
+      aria-label={`Maps to ${item.label}`}
+      aria-current={isActive ? "page" : undefined}
+      title={item.label}
+    >
+      <Icon
+        className={`flex-shrink-0 h-5 w-5 ${
+          /* Remove margin-right when collapsed to ensure true centering */
+          isCollapsed ? 'mr-0' : 'mr-3'
+        } ${isActive ? 'text-primary-500' : 'text-gray-400 group-hover:text-gray-500'}`}
+        aria-hidden="true"
+      />
+      <span className={`${isCollapsed ? 'hidden' : 'block'}`}>
+        {item.label}
+      </span>
+    </button>
+  );
+})}
           </nav>
         </div>
 
