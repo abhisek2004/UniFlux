@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
-import { Award, Search, Download, Edit2, Save, X, FileText } from 'lucide-react';
+import { Search, Edit2, Save, X, FileText } from 'lucide-react';
 import jsPDF from 'jspdf';
 
 const MarksManagement: React.FC = () => {
@@ -227,8 +227,8 @@ const MarksManagement: React.FC = () => {
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Marks Entry</h3>
           </div>
 
-          <div className="overflow-x-auto">
-            <table className="w-full">
+          <div className="w-full overflow-x-auto pb-4">
+            <table className="w-full min-w-[600px] border-collapse">
               <thead className="bg-gray-50 dark:bg-gray-700">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
@@ -403,8 +403,8 @@ const MarksManagement: React.FC = () => {
             <div className="p-6 border-b border-gray-200 dark:border-gray-700">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Student Results</h3>
             </div>
-            <div className="overflow-x-auto">
-              <table className="w-full">
+            <div className="w-full overflow-x-auto pb-4">
+              <table className="w-full min-w-[600px] border-collapse">
                 <thead className="bg-gray-50 dark:bg-gray-700">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
