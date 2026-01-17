@@ -55,7 +55,7 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick, onToggleSidebar, isSidebar
           <div className="flex items-center">
             <button
               onClick={onToggleSidebar}
-              className="hidden lg:flex p-2 mr-2 rounded-lg text-gray-500 hover:text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-300 transition-colors"
+              className="hidden lg:flex p-2 rounded-lg text-gray-500 hover:text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-300 transition-colors"
               title={isSidebarCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
             >
               <Menu className="h-5 w-5" />
@@ -68,13 +68,13 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick, onToggleSidebar, isSidebar
               <Menu className="h-6 w-6" />
             </button>
 
-            <div className="flex-shrink-0 flex items-center ml-2 lg:ml-0">
-              <div className="h-8 w-8 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-lg flex items-center justify-center">
+            <div className="flex items-center gap-3">
+              <div className="h-8 w-8 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-lg flex items-center justify-center shrink-0">
                 <span className="text-white font-bold text-sm">CC</span>
               </div>
-              <div className="ml-3 hidden sm:block">
-                <h1 className="text-xl font-bold text-gray-900 dark:text-white">CampusCore</h1>
-                <p className="text-xs text-gray-500 dark:text-gray-400">University Management</p>
+              <div className="block">
+                <h1 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white leading-tight">CampusCore</h1>
+                <p className="hidden sm:block text-xs text-gray-500 dark:text-gray-400">University Management</p>
               </div>
             </div>
           </div>
@@ -118,8 +118,8 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick, onToggleSidebar, isSidebar
                             {notice.priority}
                           </span>
                         </div>
-                      </div>
-                    ))}
+                        ))
+                    )}
                   </div>
                 </div>
               )}
@@ -131,12 +131,12 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick, onToggleSidebar, isSidebar
                 onClick={toggleProfile}
                 className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               >
-                <div className="h-8 w-8 bg-primary-500 rounded-full flex items-center justify-center">
+                <div className="h-8 w-8 bg-primary-600 rounded-full flex items-center justify-center shrink-0 shadow-sm">
                   <User className="h-4 w-4 text-white" />
                 </div>
                 <div className="hidden md:block text-left">
-                  <p className="text-sm font-medium text-gray-900 dark:text-white">{currentUser?.name}</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 capitalize">{currentUser?.role}</p>
+                  <p className="text-sm font-medium text-gray-900 dark:text-white leading-none">{currentUser?.name}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 capitalize leading-none">{currentUser?.role}</p>
                 </div>
               </button>
 
@@ -145,6 +145,7 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick, onToggleSidebar, isSidebar
                   <div className="p-4 border-b border-gray-200 dark:border-gray-700">
                     <p className="text-sm font-medium text-gray-900 dark:text-white">{currentUser?.name}</p>
                     <p className="text-xs text-gray-500 dark:text-gray-400">{currentUser?.email}</p>
+                    <p className="text-xs text-primary-500 font-medium mt-1 capitalize">{currentUser?.role}</p>
                   </div>
                   <div className="p-2">
                     <button
@@ -152,7 +153,7 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick, onToggleSidebar, isSidebar
                       className="w-full flex items-center space-x-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md transition-colors"
                     >
                       <LogOut className="h-4 w-4" />
-                      <span>Logout</span>
+                      <span>Sign Out</span>
                     </button>
                   </div>
                 </div>

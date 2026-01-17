@@ -11,25 +11,25 @@ interface SummaryWidgetProps {
 }
 
 const SummaryWidget: React.FC<SummaryWidgetProps> = ({ title, value, subtitle, icon: Icon, color, type = 'neutral' }) => {
-    const typeColors = {
-        neutral: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300',
-        success: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400',
-        warning: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400',
-        info: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400',
-    };
-
     return (
-        <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-md border border-gray-100 dark:border-gray-700 flex items-center space-x-4">
-            <div className={`p-3 rounded-lg ${color}`}>
+        <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm border border-gray-100 dark:border-gray-700 flex items-center space-x-4">
+            <div className={`p-3 rounded-lg ${color} shrink-0`}>
                 <Icon className="h-6 w-6 text-white" />
             </div>
-            <div className="flex-1 overflow-hidden">
-                <h4 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{title}</h4>
+            
+            <div className="flex-1 min-w-0">
+                <h4 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider truncate">
+                    {title}
+                </h4>
                 <div className="flex items-baseline space-x-2">
-                    <span className="text-lg font-bold text-gray-900 dark:text-white truncate">{value}</span>
+                    <span className="text-lg font-bold text-gray-900 dark:text-white truncate block w-full">
+                        {value}
+                    </span>
                 </div>
                 {subtitle && (
-                    <p className="text-xs text-gray-500 dark:text-gray-400 truncate mt-0.5">{subtitle}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 truncate mt-0.5">
+                        {subtitle}
+                    </p>
                 )}
             </div>
         </div>
@@ -57,7 +57,7 @@ const DashboardSummary: React.FC<DashboardSummaryProps> = ({
     pendingGrievances
 }) => {
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 md:mb-8">
             {/* Next Class */}
             <SummaryWidget
                 title="Next Class"
@@ -70,7 +70,7 @@ const DashboardSummary: React.FC<DashboardSummaryProps> = ({
 
             {/* Attendance Status */}
             <SummaryWidget
-                title="Attendance Status"
+                title="Attendance"
                 value={`${attendanceStatus.percentage}%`}
                 subtitle={attendanceStatus.status}
                 icon={BookOpen}
@@ -82,7 +82,7 @@ const DashboardSummary: React.FC<DashboardSummaryProps> = ({
             <SummaryWidget
                 title="Latest Notice"
                 value={recentNotice || 'No new notices'}
-                subtitle="Check board for more"
+                subtitle="Check board"
                 icon={AlertCircle}
                 color="bg-purple-500"
                 type="info"
@@ -90,7 +90,7 @@ const DashboardSummary: React.FC<DashboardSummaryProps> = ({
 
             {/* Pending Support */}
             <SummaryWidget
-                title="Pending Grievances"
+                title="Grievances"
                 value={pendingGrievances.toString()}
                 subtitle={pendingGrievances > 0 ? "Under review" : "All resolved"}
                 icon={CheckCircle2}
