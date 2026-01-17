@@ -30,14 +30,17 @@
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
+    "glob": "^13.0.0",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.1.1",
+    "rimraf": "^6.1.2",
     "socket.io": "^4.8.3"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",
     "@types/node": "^25.0.3",
     "@types/socket.io": "^3.0.1",
+    "eslint": "^9.39.2",
     "nodemon": "^3.1.11",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
