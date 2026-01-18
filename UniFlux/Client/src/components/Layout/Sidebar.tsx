@@ -49,18 +49,24 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isOpen, isCo
   );
 
   return (
-    <aside
+  <aside
   id="sidebar-menu"
   className={`
-    fixed inset-y-0 left-0 z-50
+    fixed left-0 top-16 h-[calc(100vh-4rem)]
+    z-40
     bg-white dark:bg-gray-800
     border-r border-gray-200 dark:border-gray-700
     transition-all duration-300 ease-in-out
-    lg:static lg:translate-x-0 lg:inset-0
-    ${isCollapsed ? 'lg:w-20' : 'lg:w-64'}
+
+    ${isCollapsed ? 'w-20' : 'w-64'}
     ${isOpen ? 'translate-x-0' : '-translate-x-full'}
+
+    lg:translate-x-0
   `}
 >
+
+
+
 
       <div className="flex flex-col h-full">
         <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
