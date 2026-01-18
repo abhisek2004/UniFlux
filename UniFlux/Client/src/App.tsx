@@ -179,7 +179,7 @@ const MainApp: React.FC = () => {
           isSidebarCollapsed={sidebarCollapsed}
         />
 
-        <main className="flex-1 p-6">
+<main className="flex-1 pt-20 px-6 pb-6">
           <div className="max-w-7xl mx-auto">
             {renderContent()}
           </div>
