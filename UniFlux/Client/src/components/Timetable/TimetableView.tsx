@@ -17,7 +17,59 @@ const TimetableView: React.FC = () => {
     3: [{ day: 'Monday', timeSlots: [{ time: '9:00-10:00', subjectCode: 'CS301', subjectName: 'Algorithms', teacherName: 'Dr. Agarwal' }, { time: '10:00-11:00', subjectCode: 'CS302', subjectName: 'Computer Organization', teacherName: 'Prof. Mishra' }, { time: '11:00-12:00', subjectCode: 'MA301', subjectName: 'Discrete Mathematics', teacherName: 'Dr. Sharma' }, { time: '1:00-2:00', subjectCode: 'CS303', subjectName: 'Database Systems', teacherName: 'Dr. Rathi' }, { time: '2:00-3:00', subjectCode: 'CS304', subjectName: 'Software Engineering', teacherName: 'Prof. Joshi' }] }],
     4: [{ day: 'Monday', timeSlots: [{ time: '9:00-10:00', subjectCode: 'CS401', subjectName: 'Theory of Computation', teacherName: 'Dr. Agarwal' }, { time: '10:00-11:00', subjectCode: 'CS402', subjectName: 'Computer Networks', teacherName: 'Prof. Raj' }, { time: '11:00-12:00', subjectCode: 'CS403', subjectName: 'Compiler Design', teacherName: 'Dr. Singh' }, { time: '1:00-2:00', subjectCode: 'CS404', subjectName: 'Web Technologies', teacherName: 'Prof. Bhatia' }, { time: '2:00-3:00', subjectCode: 'CS405', subjectName: 'Mobile Computing', teacherName: 'Dr. Gupta' }] }],
     5: sampleTimetable,
-    6: [{ day: 'Monday', timeSlots: [{ time: '9:00-10:00', subjectCode: 'CS601', subjectName: 'Machine Learning', teacherName: 'Dr. Kumar' }, { time: '10:00-11:00', subjectCode: 'CS602', subjectName: 'Cloud Computing', teacherName: 'Prof. Sharma' }, { time: '11:00-12:00', subjectCode: 'CS603', subjectName: 'Information Security', teacherName: 'Dr. Patel' }, { time: '1:00-2:00', subjectCode: 'CS604', subjectName: 'Big Data Analytics', teacherName: 'Prof. Agarwal' }, { time: '2:00-3:00', subjectCode: 'CS605', subjectName: 'Blockchain Technology', teacherName: 'Dr. Singh' }] }],
+    6: [
+  {
+    day: 'Monday',
+    timeSlots: [
+      { time: '9:00-10:00', subjectCode: 'CS601', subjectName: 'Machine Learning', teacherName: 'Dr. Kumar' },
+      { time: '10:00-11:00', subjectCode: 'CS602', subjectName: 'Cloud Computing', teacherName: 'Prof. Sharma' },
+      { time: '11:00-12:00', subjectCode: 'CS603', subjectName: 'Information Security', teacherName: 'Dr. Patel' },
+      { time: '1:00-2:00', subjectCode: 'CS604', subjectName: 'Big Data Analytics', teacherName: 'Prof. Agarwal' },
+      { time: '2:00-3:00', subjectCode: 'CS605', subjectName: 'Blockchain Technology', teacherName: 'Dr. Singh' }
+    ]
+  },
+  {
+    day: 'Tuesday',
+    timeSlots: [
+      { time: '9:00-10:00', subjectCode: 'CS606', subjectName: 'Blockchain Technology', teacherName: 'Dr. Kumar' },
+      { time: '10:00-11:00', subjectCode: 'CS607', subjectName: 'Machine Learning', teacherName: 'Prof. Sharma' },
+      { time: '11:00-12:00', subjectCode: 'CS608', subjectName: 'Cloud Computing', teacherName: 'Dr. Patel' },
+      { time: '1:00-2:00', subjectCode: 'CS609', subjectName: 'Information Security', teacherName: 'Prof. Agarwal' },
+      { time: '2:00-3:00', subjectCode: 'CS610', subjectName: 'Blockchain Technology', teacherName: 'Dr. Singh' }
+    ]
+  },
+  {
+    day: 'Wednesday',
+    timeSlots: [
+      { time: '9:00-10:00', subjectCode: 'CS611', subjectName: 'Machine Learning', teacherName: 'Dr. Kumar' },
+      { time: '10:00-11:00', subjectCode: 'CS612', subjectName: 'Cloud Computing', teacherName: 'Prof. Sharma' },
+      { time: '11:00-12:00', subjectCode: 'CS613', subjectName: 'Information Security', teacherName: 'Dr. Patel' },
+      { time: '1:00-2:00', subjectCode: 'CS614', subjectName: 'Big Data Analytics', teacherName: 'Prof. Agarwal' },
+      { time: '2:00-3:00', subjectCode: 'CS615', subjectName: 'Blockchain Technology', teacherName: 'Dr. Singh' }
+    ]
+  },
+  {
+    day: 'Thursday',
+    timeSlots: [
+      { time: '9:00-10:00', subjectCode: 'CS616', subjectName: 'Blockchain Technology', teacherName: 'Dr. Kumar' },
+      { time: '10:00-11:00', subjectCode: 'CS617', subjectName: 'Machine Learning', teacherName: 'Prof. Sharma' },
+      { time: '11:00-12:00', subjectCode: 'CS618', subjectName: 'Cloud Computing', teacherName: 'Dr. Patel' },
+      { time: '1:00-2:00', subjectCode: 'CS619', subjectName: 'Information Security', teacherName: 'Prof. Agarwal' },
+      { time: '2:00-3:00', subjectCode: 'CS620', subjectName: 'Blockchain Technology', teacherName: 'Dr. Singh' }
+    ]
+  },
+  {
+    day: 'Friday',
+    timeSlots: [
+      { time: '9:00-10:00', subjectCode: 'CS621', subjectName: 'Machine Learning', teacherName: 'Dr. Kumar' },
+      { time: '10:00-11:00', subjectCode: 'CS622', subjectName: 'Cloud Computing', teacherName: 'Prof. Sharma' },
+      { time: '11:00-12:00', subjectCode: 'CS623', subjectName: 'Information Security', teacherName: 'Dr. Patel' },
+      { time: '1:00-2:00', subjectCode: 'CS624', subjectName: 'Big Data Analytics', teacherName: 'Prof. Agarwal' },
+      { time: '2:00-3:00', subjectCode: 'CS625', subjectName: 'Advanced ML', teacherName: 'Dr. Singh' }
+    ]
+  }
+],
+
     7: [{ day: 'Monday', timeSlots: [{ time: '9:00-10:00', subjectCode: 'CS701', subjectName: 'Advanced AI', teacherName: 'Dr. Kumar' }, { time: '10:00-11:00', subjectCode: 'CS702', subjectName: 'Distributed Systems', teacherName: 'Prof. Sharma' }, { time: '11:00-12:00', subjectCode: 'CS703', subjectName: 'Computer Vision', teacherName: 'Dr. Patel' }, { time: '1:00-2:00', subjectCode: 'CS704', subjectName: 'Natural Language Processing', teacherName: 'Prof. Agarwal' }, { time: '2:00-3:00', subjectCode: 'CS705', subjectName: 'Project Work I', teacherName: 'Dr. Singh' }] }],
     8: [{ day: 'Monday', timeSlots: [{ time: '9:00-10:00', subjectCode: 'CS801', subjectName: 'Advanced Algorithms', teacherName: 'Dr. Kumar' }, { time: '10:00-11:00', subjectCode: 'CS802', subjectName: 'High Performance Computing', teacherName: 'Prof. Sharma' }, { time: '11:00-12:00', subjectCode: 'CS803', subjectName: 'Research Methodology', teacherName: 'Dr. Patel' }, { time: '1:00-2:00', subjectCode: 'CS804', subjectName: 'Project Work II', teacherName: 'Prof. Agarwal' }, { time: '2:00-3:00', subjectCode: 'CS805', subjectName: 'Seminar', teacherName: 'Dr. Singh' }] }],
   };
