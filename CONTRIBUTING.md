@@ -1,9 +1,9 @@
-# 🛠️ CONTRIBUTING GUIDELINES – DevElevate
+# 🛠️ CONTRIBUTING GUIDELINES – UniFlux
 
-Welcome to **DevElevate**! 🚀  
+Welcome to **UniFlux**! 🚀  
 
 We’re beyond thrilled to have you here and excited to see your ideas come to life!  
-**DevElevate** is an open-source initiative built to empower **students, developers, and professionals** through **intelligent learning tools, AI-driven career growth, and collaborative development**. 🌍✨  
+**UniFlux** is an open-source initiative built to empower **students, developers, and professionals** through **intelligent learning tools, AI-driven career growth, and collaborative development**. 🌍✨  
 
 > 💡 **Every single contribution counts!** From fixing a typo to building a new feature — you’re helping shape the future of learning.  
 
@@ -25,7 +25,7 @@ Here’s what you can contribute to:
 - 🤖 **AI Dataset / Prompt Improvements**
 - 🔒 **Security & Performance Optimizations**
 
-> 🧭 Whether you’re a beginner or a pro — DevElevate is the perfect space to learn, build, and grow together.
+> 🧭 Whether you’re a beginner or a pro — UniFlux is the perfect space to learn, build, and grow together.
 
 ---
 
@@ -126,7 +126,7 @@ Frontend runs at: `http://localhost:5173`
 If needed, configure your `.env` file:
 
 ```bash
-cd DevElevate/Server
+cd UniFlux/Server
 cp .env.sample .env
 ```
 
@@ -157,7 +157,7 @@ git push origin <branch-name>    # 🚀 Push safely
 To stay updated with the latest main branch:
 
 ```bash
-git remote add upstream https://github.com/abhisek2004/Dev-Elevate.git
+git remote add upstream https://github.com/abhisek2004/UniFlux.git
 git pull upstream main
 git push origin main
 ```
@@ -178,7 +178,7 @@ git push origin main
 1. Fork → Clone → Work on changes
 2. Commit using meaningful messages
 3. Push changes to your branch
-4. Create a **Pull Request to the `main` branch** of [DevElevate](https://github.com/abhisek2004/Dev-Elevate)
+4. Create a **Pull Request to the `main` branch** of [UniFlux](https://github.com/abhisek2004/UniFlux)
 5. Add proper description, screenshots (if UI), and related issue numbers (`Closes #issue_no`)
 
 > 🧩 PRs without proper descriptions may be delayed for review.
@@ -212,7 +212,7 @@ git push origin main
 ## 🤝 Community & Mentorship
 
 We believe in **collaboration over competition**. 💪
-Get guidance, discuss your ideas, and connect with mentors in our **DevElevate Community Discussions** or Discord.
+Get guidance, discuss your ideas, and connect with mentors in our **UniFlux Community Discussions** or Discord.
 You’ll gain hands-on mentorship, feedback, and growth opportunities.
 
 ---
@@ -222,7 +222,7 @@ You’ll gain hands-on mentorship, feedback, and growth opportunities.
 * 📘 [How to Fork a Repo](https://docs.github.com/en/get-started/quickstart/fork-a-repo)
 * 🔄 [How to Create a Pull Request](https://opensource.com/article/19/7/create-pull-request-github)
 * 🧭 [GitHub Docs](https://docs.github.com/en)
-* 💬 Join DevElevate Discussions or Discord (coming soon)
+* 💬 Join UniFlux Discussions or Discord (coming soon)
 
 ---
 
