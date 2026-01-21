@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useApp } from '../../context/AppContext';
-import { Bell, Moon, Sun, User, LogOut, Menu } from 'lucide-react';
+import React, { useState, useEffect, useRef } from "react";
+import { useApp } from "../../context/AppContext";
+import { Bell, Moon, Sun, User, LogOut, Menu } from "lucide-react";
 
 interface HeaderProps {
   onMenuClick: () => void;
@@ -20,7 +20,7 @@ const Header: React.FC<HeaderProps> = ({
   const notificationRef = useRef<HTMLDivElement>(null);
   const profileRef = useRef<HTMLDivElement>(null);
 
-  const urgentNotices = notices.filter(n => n.priority === 'urgent').length;
+  const urgentNotices = notices.filter((n) => n.priority === "urgent").length;
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -39,36 +39,35 @@ const Header: React.FC<HeaderProps> = ({
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () =>
-      document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const toggleNotifications = () => {
-    setShowNotifications(prev => !prev);
+    setShowNotifications((prev) => !prev);
     setShowProfile(false);
   };
 
   const toggleProfile = () => {
-    setShowProfile(prev => !prev);
+    setShowProfile((prev) => !prev);
     setShowNotifications(false);
   };
 
   return (
-<header className="fixed top-0 left-0 right-0 z-50
-  bg-white dark:bg-gray-800
-  shadow-lg
-  border-b border-gray-200 dark:border-gray-700">
-    <header className="bg-white border-b border-gray-200 shadow-lg dark:bg-gray-800 dark:border-gray-700">
+    <header
+      className="fixed top-0 left-0 right-0 z-50
+      bg-white dark:bg-gray-800
+      shadow-lg
+      border-b border-gray-200 dark:border-gray-700"
+    >
       <div className="px-4">
         <div className="flex items-center justify-between h-16">
-
           {/* Left Section */}
           <div className="flex items-center">
             <button
               onClick={onToggleSidebar}
               className="hidden p-2 text-gray-500 transition-colors rounded-lg lg:flex hover:text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-300"
-              title={isSidebarCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
+              title={isSidebarCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
             >
               <Menu className="w-5 h-5" />
             </button>
@@ -84,6 +83,7 @@ const Header: React.FC<HeaderProps> = ({
               <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-r from-primary-500 to-secondary-500">
                 <span className="text-sm font-bold text-white">CC</span>
               </div>
+
               <div>
                 <h1 className="text-lg font-bold text-gray-900 dark:text-white">
                   CampusCore
@@ -102,7 +102,11 @@ const Header: React.FC<HeaderProps> = ({
               onClick={toggleDarkMode}
               className="p-2 text-gray-500 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
             >
-              {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+              {darkMode ? (
+                <Sun className="w-5 h-5" />
+              ) : (
+                <Moon className="w-5 h-5" />
+              )}
             </button>
 
             {/* Notifications */}
@@ -128,7 +132,7 @@ const Header: React.FC<HeaderProps> = ({
                   </div>
 
                   <div className="overflow-y-auto max-h-64">
-                    {notices.slice(0, 5).map(notice => (
+                    {notices.slice(0, 5).map((notice) => (
                       <div
                         key={notice.id}
                         className="p-4 border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
@@ -142,11 +146,13 @@ const Header: React.FC<HeaderProps> = ({
                               {notice.content.substring(0, 60)}...
                             </p>
                           </div>
+
                           <span
-                            className={`px-2 py-1 text-xs rounded-full ${notice.priority === 'urgent'
-                              ? 'bg-red-100 text-red-800'
-                              : 'bg-blue-100 text-blue-800'
-                              }`}
+                            className={`px-2 py-1 text-xs rounded-full ${
+                              notice.priority === "urgent"
+                                ? "bg-red-100 text-red-800"
+                                : "bg-blue-100 text-blue-800"
+                            }`}
                           >
                             {notice.priority}
                           </span>
@@ -167,6 +173,7 @@ const Header: React.FC<HeaderProps> = ({
                 <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary-600">
                   <User className="w-4 h-4 text-white" />
                 </div>
+
                 <div className="hidden ml-3 text-left md:block">
                   <p className="text-sm font-medium dark:text-white">
                     {currentUser?.name}
@@ -190,6 +197,7 @@ const Header: React.FC<HeaderProps> = ({
                       {currentUser?.role}
                     </p>
                   </div>
+
                   <div className="p-2">
                     <button
                       onClick={logout}
