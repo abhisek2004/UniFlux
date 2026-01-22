@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import { useApp } from './context/AppContext';
-import Header from './components/Layout/Header';
+import Header from './components/Layout/Header.tsx';
 import Sidebar from './components/Layout/Sidebar';
 import Footer from './components/Layout/Footer';
 import LoginForm from './components/Auth/LoginForm';
@@ -46,7 +46,6 @@ function App() {
   return (
     <Router>
       <Routes>
-        {/* Footer Pages - Accessible without login */}
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/terms-of-service" element={<TermsOfService />} />
         <Route path="/student-code-of-conduct" element={<StudentCodeOfConduct />} />
@@ -59,8 +58,7 @@ function App() {
         <Route path="/faculty-directory" element={<MainAppWithPage page="faculty-directory" />} />
         <Route path="/library" element={<MainAppWithPage page="library" />} />
         <Route path="/career-services" element={<MainAppWithPage page="career-services" />} />
-        
-        {/* Authentication Routes */}
+
         <Route path="/login" element={<LoginForm />} />
         <Route path="/role-selection" element={<RoleSelection />} />
         <Route path="/register/:role" element={<RegistrationForm />} />
@@ -131,7 +129,7 @@ const MainApp: React.FC = () => {
           onClick={() => setSidebarOpen(false)}
         />
       )}
-      
+
       <div className="flex-1 flex flex-col min-w-0 h-full">
         <Header
           onMenuClick={() => setSidebarOpen(!sidebarOpen)}
@@ -139,9 +137,7 @@ const MainApp: React.FC = () => {
           isSidebarCollapsed={sidebarCollapsed}
         />
 
-<main className="flex-1 pt-20 px-6 pb-6">
-          <div className="max-w-7xl mx-auto">
-        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 dark:bg-gray-900">
+        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 dark:bg-gray-900 pt-20 px-6 pb-6">
           <div className="p-4 md:p-6 lg:p-8 max-w-7xl mx-auto w-full">
             {renderContent()}
           </div>
@@ -172,37 +168,37 @@ const MainAppWithPage: React.FC<{ page: string }> = ({ page }) => {
 
   return (
     <div className="h-screen bg-gray-50 dark:bg-gray-900 flex overflow-hidden">
-      <Sidebar
-        activeTab={page}
-        setActiveTab={() => { }}
-        isOpen={sidebarOpen}
-        isCollapsed={sidebarCollapsed}
-        onNavigate={(route) => navigate(route)}
-        onClose={() => setSidebarOpen(false)}
-      />
+  {/* Sidebar */}
+  <Sidebar
+    activeTab={page}
+    setActiveTab={() => {}}
+    isOpen={sidebarOpen}
+    isCollapsed={sidebarCollapsed}
+    onNavigate={(route) => navigate(route)}
+    onClose={() => setSidebarOpen(false)}
+  />
 
-      {sidebarOpen && (
-        <div
-          className="fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-40 lg:hidden"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
-      
-      <div className="flex-1 flex flex-col min-w-0 h-full">
-        <Header
-          onMenuClick={() => setSidebarOpen(!sidebarOpen)}
-          onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
-          isSidebarCollapsed={sidebarCollapsed}
-        />
+  {/* Main Content */}
+  <div
+    className={`flex-1 flex flex-col min-w-0 h-full transition-all duration-300
+      ${sidebarCollapsed ? 'lg:ml-20' : 'lg:ml-64'}
+    `}
+  >
+    <Header
+      onMenuClick={() => setSidebarOpen(!sidebarOpen)}
+      onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
+      isSidebarCollapsed={sidebarCollapsed}
+    />
 
-        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 dark:bg-gray-900">
-          <div className="p-4 md:p-6 lg:p-8 max-w-7xl mx-auto w-full">
-            {renderContent()}
-          </div>
-          <Footer />
-        </main>
+    <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 dark:bg-gray-900 pt-20 px-6 pb-6">
+      <div className="p-4 md:p-6 lg:p-8 max-w-7xl mx-auto w-full">
+        {renderContent()}
       </div>
-    </div>
+      <Footer />
+    </main>
+  </div>
+</div>
+
   );
 };
 
