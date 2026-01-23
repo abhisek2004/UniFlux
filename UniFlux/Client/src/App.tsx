@@ -59,14 +59,20 @@ function App() {
         <Route path="/library" element={<MainAppWithPage page="library" />} />
         <Route path="/career-services" element={<MainAppWithPage page="career-services" />} />
 
+        {/* Authentication Routes */}
         <Route path="/login" element={<LoginForm />} />
         <Route path="/role-selection" element={<RoleSelection />} />
         <Route path="/register/:role" element={<RegistrationForm />} />
         <Route path="/superadmin" element={<SuperAdminLogin />} />
-        <Route path="/*" element={currentUser ? <MainApp /> : <RoleSelection />} />
+
+        {/* Main App */}
         <Route path="/" element={currentUser ? <MainApp /> : <RoleSelection />} />
+        <Route path="/*" element={currentUser ? <MainApp /> : <RoleSelection />} />
+
+        {/* Not Found */}
         <Route path="*" element={<NotFound />} />
       </Routes>
+
       <ScrollToTop />
     </Router>
   );
@@ -86,30 +92,59 @@ const MainApp: React.FC = () => {
     switch (activeTab) {
       case 'dashboard':
         switch (currentUser?.role) {
-          case 'superadmin': return <SuperAdminDashboard />;
-          case 'hod': return <HODDashboard />;
-          case 'teacher': return <TeacherDashboard />;
-          case 'student': return <StudentDashboard />;
-          default: return <RoleSelection />;
+          case 'superadmin':
+            return <SuperAdminDashboard />;
+          case 'hod':
+            return <HODDashboard />;
+          case 'teacher':
+            return <TeacherDashboard />;
+          case 'student':
+            return <StudentDashboard />;
+          default:
+            return <RoleSelection />;
         }
-      case 'students': return <StudentList />;
-      case 'teachers': return <TeacherList />;
-      case 'subjects': return <SubjectList />;
-      case 'attendance': return <AttendanceManagement />;
-      case 'marks': return <MarksManagement />;
-      case 'timetable': return <TimetableView />;
-      case 'reports': return <ReportsManagement />;
-      case 'grievances': return <GrievanceManagement />;
-      case 'notices': return <NoticeBoard />;
-      case 'settings': return <SettingsManagement />;
-      case 'user-feedback': return <UserFeedback />;
-      case 'academic-calendar': return <AcademicCalendarPage />;
-      case 'admissions': return <AdmissionsPage />;
-      case 'student-portal': return <StudentPortalPage />;
-      case 'faculty-directory': return <FacultyDirectoryPage />;
-      case 'library': return <LibraryPage />;
-      case 'career-services': return <CareerServicesPage />;
-      default: return <div className="p-4 sm:p-8"><NotFound /></div>;
+
+      case 'students':
+        return <StudentList />;
+      case 'teachers':
+        return <TeacherList />;
+      case 'subjects':
+        return <SubjectList />;
+      case 'attendance':
+        return <AttendanceManagement />;
+      case 'marks':
+        return <MarksManagement />;
+      case 'timetable':
+        return <TimetableView />;
+      case 'reports':
+        return <ReportsManagement />;
+      case 'grievances':
+        return <GrievanceManagement />;
+      case 'notices':
+        return <NoticeBoard />;
+      case 'settings':
+        return <SettingsManagement />;
+      case 'user-feedback':
+        return <UserFeedback />;
+      case 'academic-calendar':
+        return <AcademicCalendarPage />;
+      case 'admissions':
+        return <AdmissionsPage />;
+      case 'student-portal':
+        return <StudentPortalPage />;
+      case 'faculty-directory':
+        return <FacultyDirectoryPage />;
+      case 'library':
+        return <LibraryPage />;
+      case 'career-services':
+        return <CareerServicesPage />;
+
+      default:
+        return (
+          <div className="p-4 sm:p-8">
+            <NotFound />
+          </div>
+        );
     }
   };
 
@@ -137,7 +172,8 @@ const MainApp: React.FC = () => {
           isSidebarCollapsed={sidebarCollapsed}
         />
 
-        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 dark:bg-gray-900 pt-20 px-6 pb-6">
+        {/* ✅ Fixed: Only one <main> tag */}
+        <main className="flex-1 pt-20 overflow-x-hidden overflow-y-auto bg-gray-50 dark:bg-gray-900">
           <div className="p-4 md:p-6 lg:p-8 max-w-7xl mx-auto w-full">
             {renderContent()}
           </div>
@@ -155,14 +191,22 @@ const MainAppWithPage: React.FC<{ page: string }> = ({ page }) => {
 
   const renderContent = () => {
     switch (page) {
-      case 'academic-calendar': return <AcademicCalendarPage />;
-      case 'admissions': return <AdmissionsPage />;
-      case 'student-portal': return <StudentPortalPage />;
-      case 'faculty-directory': return <FacultyDirectoryPage />;
-      case 'library': return <LibraryPage />;
-      case 'career-services': return <CareerServicesPage />;
-      case 'user-feedback': return <UserFeedback />;
-      default: return <NotFound />;
+      case 'academic-calendar':
+        return <AcademicCalendarPage />;
+      case 'admissions':
+        return <AdmissionsPage />;
+      case 'student-portal':
+        return <StudentPortalPage />;
+      case 'faculty-directory':
+        return <FacultyDirectoryPage />;
+      case 'library':
+        return <LibraryPage />;
+      case 'career-services':
+        return <CareerServicesPage />;
+      case 'user-feedback':
+        return <UserFeedback />;
+      default:
+        return <NotFound />;
     }
   };
 
@@ -178,21 +222,26 @@ const MainAppWithPage: React.FC<{ page: string }> = ({ page }) => {
     onClose={() => setSidebarOpen(false)}
   />
 
-  {/* Main Content */}
-  <div
-    className={`flex-1 flex flex-col min-w-0 h-full transition-all duration-300
-      ${sidebarCollapsed ? 'lg:ml-20' : 'lg:ml-64'}
-    `}
-  >
-    <Header
-      onMenuClick={() => setSidebarOpen(!sidebarOpen)}
-      onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
-      isSidebarCollapsed={sidebarCollapsed}
-    />
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-40 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
 
-    <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 dark:bg-gray-900 pt-20 px-6 pb-6">
-      <div className="p-4 md:p-6 lg:p-8 max-w-7xl mx-auto w-full">
-        {renderContent()}
+      <div className="flex-1 flex flex-col min-w-0 h-full">
+        <Header
+          onMenuClick={() => setSidebarOpen(!sidebarOpen)}
+          onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
+          isSidebarCollapsed={sidebarCollapsed}
+        />
+
+        <main className="flex-1 pt-20 overflow-x-hidden overflow-y-auto bg-gray-50 dark:bg-gray-900">
+          <div className="p-4 md:p-6 lg:p-8 max-w-7xl mx-auto w-full">
+            {renderContent()}
+          </div>
+          <Footer />
+        </main>
       </div>
       <Footer />
     </main>
