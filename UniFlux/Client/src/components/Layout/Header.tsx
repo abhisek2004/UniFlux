@@ -72,11 +72,28 @@ const Header: React.FC<HeaderProps> = ({
               <Menu className="w-5 h-5" />
             </button>
 
+        {/* Right Section */}
+        <div className="flex items-center space-x-4">
+          {/* Dark Mode */}
+          <button
+            onClick={toggleDarkMode}
+            className="p-2 text-gray-500 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+          >
+            {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+          </button>
+
+          {/* Notifications */}
+          <div className="relative" ref={notificationRef}>
             <button
-              onClick={onMenuClick}
-              className="p-2 text-gray-400 rounded-md hover:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 lg:hidden"
+              onClick={toggleNotifications}
+              className="relative p-2 text-gray-500 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
             >
-              <Menu className="w-6 h-6" />
+              <Bell className="w-5 h-5" />
+              {urgentNotices > 0 && (
+                <span className="absolute flex items-center justify-center w-4 h-4 text-xs text-white bg-red-500 rounded-full -top-1 -right-1">
+                  {urgentNotices}
+                </span>
+              )}
             </button>
 
             <div className="flex items-center gap-3 ml-2">
@@ -92,15 +109,14 @@ const Header: React.FC<HeaderProps> = ({
                   University Management
                 </p>
               </div>
-            </div>
+            )}
           </div>
 
-          {/* Right Section */}
-          <div className="flex items-center space-x-4">
-            {/* Dark Mode */}
+          {/* Profile */}
+          <div className="relative" ref={profileRef}>
             <button
-              onClick={toggleDarkMode}
-              className="p-2 text-gray-500 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+              onClick={toggleProfile}
+              className="flex items-center p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
             >
               {darkMode ? (
                 <Sun className="w-5 h-5" />
@@ -178,7 +194,10 @@ const Header: React.FC<HeaderProps> = ({
                   <p className="text-sm font-medium dark:text-white">
                     {currentUser?.name}
                   </p>
-                  <p className="text-xs text-gray-500 capitalize dark:text-gray-400">
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    {currentUser?.email}
+                  </p>
+                  <p className="mt-1 text-xs font-medium capitalize text-primary-500">
                     {currentUser?.role}
                   </p>
                 </div>
@@ -208,13 +227,15 @@ const Header: React.FC<HeaderProps> = ({
                     </button>
                   </div>
                 </div>
-              )}
-            </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
-    </header>
-  );
+    </div>
+  </header>
+);
+
 };
 
 export default Header;
