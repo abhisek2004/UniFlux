@@ -1,9 +1,47 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import { useApp } from '../../context/AppContext';
-import { BookOpen, Calendar, ClipboardCheck, Award, Bell, MessageSquare, TrendingUp, Clock } from 'lucide-react';
+import { BookOpen, Calendar, ClipboardCheck, Award, Bell, MessageSquare, TrendingUp, Clock, Search } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 import DashboardSummary from './DashboardSummary';
+import { sampleTimetable } from '../../data/sampleData';
 
+type ResultStatusKey = 'top' | 'track' | 'attention';
+
+const DAY_PRIORITY: Record<string, number> = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+  .reduce((acc, day, index) => {
+    acc[day] = index;
+    return acc;
+  }, {} as Record<string, number>);
+
+const parseSlotStartMinutes = (range: string) => {
+  const [start] = range.split('-');
+  const [hours, minutes] = start.split(':').map(Number);
+  return hours * 60 + (minutes || 0);
+};
+
+const getResultStatusMeta = (score: number): { label: string; key: ResultStatusKey; badgeClass: string } => {
+  if (score >= 85) {
+    return {
+      label: 'Top Performer',
+      key: 'top',
+      badgeClass: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-200',
+    };
+  }
+
+  if (score >= 70) {
+    return {
+      label: 'On Track',
+      key: 'track',
+      badgeClass: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-200',
+    };
+  }
+
+  return {
+    label: 'Needs Attention',
+    key: 'attention',
+    badgeClass: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-200',
+  };
+};
 
 const StudentDashboard: React.FC = () => {
   const { currentUser, attendance, marks, subjects, notices, grievances } = useApp();
@@ -58,6 +96,93 @@ const StudentDashboard: React.FC = () => {
 
   const recentNotices = notices.slice(0, 3);
   const myGrievances = grievances.filter(g => g.studentId === currentUser?.id);
+  const pendingGrievancesCount = myGrievances.filter(g => g.status !== 'resolved').length;
+
+  const [resultsSearch, setResultsSearch] = useState('');
+  const [resultsSubjectFilter, setResultsSubjectFilter] = useState<'all' | string>('all');
+  const [resultsSemesterFilter, setResultsSemesterFilter] = useState<'all' | number>('all');
+  const [resultsStatusFilter, setResultsStatusFilter] = useState<'all' | ResultStatusKey>('all');
+  const [scheduleSearch, setScheduleSearch] = useState('');
+  const [scheduleDayFilter, setScheduleDayFilter] = useState<'All' | string>('All');
+
+  const subjectFilterOptions = useMemo(() => {
+    const unique = new Map<string, { code: string; name: string }>();
+    subjects.forEach(subject => {
+      unique.set(subject.code, { code: subject.code, name: subject.name });
+    });
+    return Array.from(unique.values());
+  }, [subjects]);
+
+  const semesterFilterOptions = useMemo(() => {
+    return Array.from(new Set(studentMarks.map(mark => mark.semester))).sort((a, b) => a - b);
+  }, [studentMarks]);
+
+  const enrichedMarks = useMemo(() => {
+    return studentMarks.map(mark => {
+      const subject = subjects.find(s => s.id === mark.subjectId);
+      const subjectMeta = subject
+        ? { code: subject.code, name: subject.name }
+        : { code: 'GEN', name: 'General Subject' };
+      return {
+        ...mark,
+        subjectMeta,
+        status: getResultStatusMeta(mark.totalMarks),
+      };
+    });
+  }, [studentMarks, subjects]);
+
+  const filteredResults = useMemo(() => {
+    const query = resultsSearch.trim().toLowerCase();
+    return enrichedMarks.filter(mark => {
+      const matchesSearch =
+        !query ||
+        mark.subjectMeta.name.toLowerCase().includes(query) ||
+        mark.subjectMeta.code.toLowerCase().includes(query);
+      const matchesSubject = resultsSubjectFilter === 'all' || mark.subjectMeta.code === resultsSubjectFilter;
+      const matchesSemester = resultsSemesterFilter === 'all' || mark.semester === resultsSemesterFilter;
+      const matchesStatus = resultsStatusFilter === 'all' || mark.status.key === resultsStatusFilter;
+      return matchesSearch && matchesSubject && matchesSemester && matchesStatus;
+    });
+  }, [enrichedMarks, resultsSearch, resultsSubjectFilter, resultsSemesterFilter, resultsStatusFilter]);
+
+  const visibleResults = filteredResults.slice(0, 6);
+
+  const scheduleDayOptions = useMemo(
+    () => ['All', ...Array.from(new Set(sampleTimetable.map(day => day.day)))],
+    []
+  );
+
+  const flattenedSchedule = useMemo(() => {
+    return sampleTimetable
+      .flatMap(day =>
+        day.timeSlots.map(slot => ({
+          ...slot,
+          day: day.day,
+        }))
+      )
+      .sort((a, b) => {
+        const dayDiff = (DAY_PRIORITY[a.day] ?? 999) - (DAY_PRIORITY[b.day] ?? 999);
+        if (dayDiff !== 0) {
+          return dayDiff;
+        }
+        return parseSlotStartMinutes(a.time) - parseSlotStartMinutes(b.time);
+      });
+  }, []);
+
+  const filteredSchedule = useMemo(() => {
+    const query = scheduleSearch.trim().toLowerCase();
+    return flattenedSchedule.filter(slot => {
+      const matchesDay = scheduleDayFilter === 'All' || slot.day === scheduleDayFilter;
+      const matchesSearch =
+        !query ||
+        slot.subjectName.toLowerCase().includes(query) ||
+        slot.subjectCode.toLowerCase().includes(query) ||
+        slot.teacherName.toLowerCase().includes(query);
+      return matchesDay && matchesSearch;
+    });
+  }, [flattenedSchedule, scheduleDayFilter, scheduleSearch]);
+
+  const limitedSchedule = filteredSchedule.slice(0, 6);
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -87,8 +212,182 @@ const StudentDashboard: React.FC = () => {
           status: attendancePercentage >= 75 ? 'Good' : attendancePercentage >= 60 ? 'Fair' : 'Low'
         }}
         recentNotice={notices[0]?.title}
-        pendingGrievances={grievances.filter(g => g.studentId === currentUser?.id && g.status !== 'resolved').length}
+        pendingGrievances={pendingGrievancesCount}
       />
+
+      {/* Filters & Navigation Aids */}
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        <div className="xl:col-span-2 bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-gray-700">
+          <div className="flex flex-col gap-4 lg:flex-row">
+            <div className="flex-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Search results</label>
+              <div className="relative">
+                <Search className="h-5 w-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                <input
+                  type="text"
+                  value={resultsSearch}
+                  onChange={(event) => setResultsSearch(event.target.value)}
+                  placeholder="Find a subject, code, or grade"
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"
+                />
+              </div>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full lg:w-[420px]">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Subject</label>
+                <select
+                  value={resultsSubjectFilter}
+                  onChange={(event) => setResultsSubjectFilter(event.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"
+                >
+                  <option value="all">All subjects</option>
+                  {subjectFilterOptions.map((subject) => (
+                    <option key={subject.code} value={subject.code}>
+                      {subject.code}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Semester</label>
+                <select
+                  value={resultsSemesterFilter}
+                  onChange={(event) =>
+                    setResultsSemesterFilter(event.target.value === 'all' ? 'all' : Number(event.target.value))
+                  }
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"
+                >
+                  <option value="all">All</option>
+                  {semesterFilterOptions.map((semester) => (
+                    <option key={semester} value={semester}>
+                      Sem {semester}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Status</label>
+                <select
+                  value={resultsStatusFilter}
+                  onChange={(event) => setResultsStatusFilter(event.target.value as ResultStatusKey | 'all')}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"
+                >
+                  <option value="all">All</option>
+                  <option value="top">Top performer</option>
+                  <option value="track">On track</option>
+                  <option value="attention">Needs attention</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-6 overflow-x-auto">
+            {visibleResults.length > 0 ? (
+              <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-sm">
+                <thead>
+                  <tr className="text-left text-gray-500 dark:text-gray-300">
+                    <th className="py-3 pr-6 font-medium">Subject</th>
+                    <th className="py-3 pr-6 font-medium">Marks</th>
+                    <th className="py-3 pr-6 font-medium">Grade</th>
+                    <th className="py-3 pr-6 font-medium">Semester</th>
+                    <th className="py-3 font-medium">Status</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                  {visibleResults.map((mark) => (
+                    <tr key={`${mark.subjectId}-${mark.semester}`} className="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                      <td className="py-3 pr-6">
+                        <p className="font-semibold text-gray-900 dark:text-white">{mark.subjectMeta.code}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">{mark.subjectMeta.name}</p>
+                      </td>
+                      <td className="py-3 pr-6">
+                        <p className="font-semibold text-gray-900 dark:text-white">{mark.totalMarks}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                          {mark.internalMarks} + {mark.externalMarks}
+                        </p>
+                      </td>
+                      <td className="py-3 pr-6 text-gray-900 dark:text-white">{mark.grade}</td>
+                      <td className="py-3 pr-6 text-gray-900 dark:text-white">Sem {mark.semester}</td>
+                      <td className="py-3">
+                        <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${mark.status.badgeClass}`}>
+                          {mark.status.label}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <p className="text-sm text-gray-500 dark:text-gray-400">No results match the selected filters.</p>
+            )}
+          </div>
+        </div>
+
+        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-gray-700">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Upcoming classes</h3>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Quickly scan your next few sessions</p>
+            </div>
+            <span className="text-xs text-gray-500 dark:text-gray-400">{filteredSchedule.length} results</span>
+          </div>
+
+          <div className="mt-4 space-y-4">
+            <div className="relative">
+              <Search className="h-5 w-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <input
+                type="text"
+                value={scheduleSearch}
+                onChange={(event) => setScheduleSearch(event.target.value)}
+                placeholder="Search subject, code, or faculty"
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Filter by day</label>
+              <select
+                value={scheduleDayFilter}
+                onChange={(event) => setScheduleDayFilter(event.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"
+              >
+                {scheduleDayOptions.map((day) => (
+                  <option key={day} value={day}>
+                    {day}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <div className="mt-5 space-y-3 max-h-80 overflow-y-auto pr-1">
+            {limitedSchedule.length > 0 ? (
+              limitedSchedule.map((slot, index) => (
+                <div
+                  key={`${slot.day}-${slot.time}-${slot.subjectCode}-${index}`}
+                  className="p-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/40"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-semibold text-primary-600 dark:text-primary-400">{slot.day}</span>
+                    <span className="text-xs px-2 py-1 rounded-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300">
+                      {slot.time}
+                    </span>
+                  </div>
+                  <p className="mt-2 text-base font-semibold text-gray-900 dark:text-white">{slot.subjectName}</p>
+                  <div className="mt-2 flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
+                    <span>{slot.subjectCode}</span>
+                    <span className="flex items-center gap-1">
+                      <Clock className="h-3.5 w-3.5" />
+                      {slot.teacherName}
+                    </span>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p className="text-sm text-gray-500 dark:text-gray-400">No classes match the selected filters.</p>
+            )}
+          </div>
+        </div>
+      </div>
 
 
       {/* Stats Grid */}

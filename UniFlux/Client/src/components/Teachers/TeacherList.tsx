@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
-import { useToast } from '../../context/ToastContext';
 import { Search, Plus, Edit2, Eye, Download, Filter, GraduationCap, BookOpen, Mail, Trash2 } from 'lucide-react';
 import TeacherForm from './TeacherForm';
 import { Teacher } from '../../types';
 
 const TeacherList: React.FC = () => {
   const { teachers, subjects, currentUser, deleteTeacher } = useApp();
-  const { showToast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
   const [showForm, setShowForm] = useState(false);
   const [selectedTeacher, setSelectedTeacher] = useState<Teacher | null>(null);
@@ -17,7 +15,6 @@ const TeacherList: React.FC = () => {
   const handleDelete = (id: string) => {
     if (window.confirm('Are you sure you want to delete this teacher?')) {
       deleteTeacher(id);
-      showToast('success', 'Teacher Deleted', 'Teacher record has been successfully deleted.');
     }
   };
 
