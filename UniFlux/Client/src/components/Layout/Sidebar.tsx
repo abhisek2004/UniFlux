@@ -24,9 +24,18 @@ interface SidebarProps {
   isCollapsed?: boolean;
   onNavigate?: (tab: string) => void;
   onClose?: () => void;
+  onToggleCollapse?: () => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isOpen, isCollapsed, onNavigate, onClose }) => {
+const Sidebar: React.FC<SidebarProps> = ({
+  activeTab,
+  setActiveTab,
+  isOpen,
+  isCollapsed,
+  onNavigate,
+  onClose,
+  onToggleCollapse,
+}) => {
   const { currentUser } = useApp();
 
   const menuItems = [
@@ -132,6 +141,19 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isOpen, isCo
   );
 })}
           </nav>
+          {onToggleCollapse && (
+            <div className={`mt-6 ${isCollapsed ? 'px-2' : 'px-4'}`}>
+              <button
+                onClick={onToggleCollapse}
+                className={`w-full flex items-center justify-center rounded-lg border border-gray-200 dark:border-gray-700 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors ${isCollapsed ? 'px-0' : 'px-3'}`}
+                aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+                title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+              >
+                <LayoutGrid className="h-4 w-4" />
+                {!isCollapsed && <span className="ml-2">Collapse menu</span>}
+              </button>
+            </div>
+          )}
         </div>
 
         <div className="flex-shrink-0 flex border-t border-gray-200 dark:border-gray-700 p-4">
