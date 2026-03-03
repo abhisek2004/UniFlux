@@ -54,12 +54,7 @@ const LoginForm: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const success = await login(formData.email, formData.password);
-      if (!success) {
-        setError('Invalid email or password');
-      }
-    } catch (err) {
-      showToast('error', 'Error Occurred', 'An unexpected error occurred. Please try again later.');
+      await login(formData.email, formData.password);
     } finally {
       setIsLoading(false);
     }

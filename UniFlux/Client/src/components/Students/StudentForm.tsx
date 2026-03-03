@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
-import { useToast } from '../../context/ToastContext';
 import { X } from 'lucide-react';
 import { Student } from '../../types';
 
@@ -11,7 +10,6 @@ interface StudentFormProps {
 
 const StudentForm: React.FC<StudentFormProps> = ({ student, onClose }) => {
   const { addStudent, updateStudent } = useApp();
-  const { showToast } = useToast();
   const [formData, setFormData] = useState({
     name: student?.name || '',
     email: student?.email || '',
@@ -27,10 +25,8 @@ const StudentForm: React.FC<StudentFormProps> = ({ student, onClose }) => {
 
     if (student) {
       updateStudent(student.id, formData);
-      showToast('success', 'Student Updated', 'Successfully updated the student information.');
     } else {
       addStudent(formData);
-      showToast('success', 'Student Added', 'Successfully added the student.');
     }
 
     onClose();

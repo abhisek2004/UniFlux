@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
-import { useToast } from '../../context/ToastContext';
 import { Search, Plus, Edit2, Eye, Download, Filter, BookOpen, User, Award, Trash2 } from 'lucide-react';
 import SubjectForm from './SubjectForm';
 import { Subject } from '../../types';
 
 const SubjectList: React.FC = () => {
   const { subjects, teachers, currentUser, deleteSubject } = useApp();
-  const { showToast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
   const [showForm, setShowForm] = useState(false);
   const [selectedSubject, setSelectedSubject] = useState<Subject | null>(null);
@@ -18,7 +16,6 @@ const SubjectList: React.FC = () => {
   const handleDelete = (id: string) => {
     if (window.confirm('Are you sure you want to delete this subject?')) {
       deleteSubject(id);
-      showToast('success', 'Subject Deleted', 'Subject record has been successfully deleted.');
     }
   };
 
