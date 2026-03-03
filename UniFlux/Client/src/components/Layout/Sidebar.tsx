@@ -62,12 +62,12 @@ const Sidebar: React.FC<SidebarProps> = ({
   id="sidebar-menu"
   className={`
     fixed left-0 top-16 h-[calc(100vh-4rem)]
-    z-40
+    z-50
     bg-white dark:bg-gray-800
     border-r border-gray-200 dark:border-gray-700
     transition-all duration-300 ease-in-out
 
-    ${isCollapsed ? 'w-20' : 'w-64'}
+    w-64 ${isCollapsed ? 'lg:w-20' : 'lg:w-64'}
     ${isOpen ? 'translate-x-0' : '-translate-x-full'}
 
     lg:translate-x-0
