@@ -88,6 +88,34 @@ const MainApp: React.FC = () => {
     setSidebarOpen(false);
   }, [activeTab]);
 
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    const mediaQuery = window.matchMedia('(max-width: 1024px)');
+    const handleChange = () => {
+      // On mobile, keep sidebar expanded when opened so menu items stay visible
+      if (mediaQuery.matches) {
+        setSidebarCollapsed(false);
+        setSidebarOpen(false);
+        return;
+      }
+      // On desktop, default to expanded; users can manually collapse
+      setSidebarCollapsed(false);
+    };
+
+    handleChange();
+
+    if (typeof mediaQuery.addEventListener === 'function') {
+      mediaQuery.addEventListener('change', handleChange);
+      return () => mediaQuery.removeEventListener('change', handleChange);
+    }
+
+    mediaQuery.addListener(handleChange);
+    return () => mediaQuery.removeListener(handleChange);
+  }, []);
+
   const renderContent = () => {
     switch (activeTab) {
       case 'dashboard':
@@ -156,11 +184,12 @@ const MainApp: React.FC = () => {
         isOpen={sidebarOpen}
         isCollapsed={sidebarCollapsed}
         onClose={() => setSidebarOpen(false)}
+        onToggleCollapse={() => setSidebarCollapsed((prev) => !prev)}
       />
 
       {sidebarOpen && (
         <div
-          className="fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-40 lg:hidden transition-opacity"
+          className="fixed inset-0 bg-gray-900/40 backdrop-blur-sm z-30 lg:hidden transition-opacity"
           onClick={() => setSidebarOpen(false)}
         />
       )}
@@ -188,6 +217,32 @@ const MainAppWithPage: React.FC<{ page: string }> = ({ page }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    const mediaQuery = window.matchMedia('(max-width: 1024px)');
+    const handleChange = () => {
+      if (mediaQuery.matches) {
+        setSidebarCollapsed(false);
+        setSidebarOpen(false);
+        return;
+      }
+      setSidebarCollapsed(false);
+    };
+
+    handleChange();
+
+    if (typeof mediaQuery.addEventListener === 'function') {
+      mediaQuery.addEventListener('change', handleChange);
+      return () => mediaQuery.removeEventListener('change', handleChange);
+    }
+
+    mediaQuery.addListener(handleChange);
+    return () => mediaQuery.removeListener(handleChange);
+  }, []);
 
   const renderContent = () => {
     switch (page) {
@@ -220,11 +275,12 @@ const MainAppWithPage: React.FC<{ page: string }> = ({ page }) => {
     isCollapsed={sidebarCollapsed}
     onNavigate={(route) => navigate(route)}
     onClose={() => setSidebarOpen(false)}
+    onToggleCollapse={() => setSidebarCollapsed((prev) => !prev)}
   />
 
       {sidebarOpen && (
         <div
-          className="fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-40 lg:hidden"
+          className="fixed inset-0 bg-gray-900/40 backdrop-blur-sm z-30 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
@@ -243,11 +299,7 @@ const MainAppWithPage: React.FC<{ page: string }> = ({ page }) => {
           <Footer />
         </main>
       </div>
-      <Footer />
-    </main>
-  </div>
-</div>
-
+    </div>
   );
 };
 

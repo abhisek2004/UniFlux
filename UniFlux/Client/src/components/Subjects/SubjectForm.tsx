@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
-import { useToast } from '../../context/ToastContext';
 import { X } from 'lucide-react';
 import { Subject } from '../../types';
 
@@ -11,7 +10,6 @@ interface SubjectFormProps {
 
 const SubjectForm: React.FC<SubjectFormProps> = ({ subject, onClose }) => {
   const { addSubject, updateSubject, teachers } = useApp();
-  const { showToast } = useToast();
   const [formData, setFormData] = useState({
     code: subject?.code || '',
     name: subject?.name || '',
@@ -33,10 +31,8 @@ const SubjectForm: React.FC<SubjectFormProps> = ({ subject, onClose }) => {
 
     if (subject) {
       updateSubject(subject.id, subjectData);
-      showToast('success', 'Subject Updated', 'Successfully updated the subject information.');
     } else {
       addSubject(subjectData);
-      showToast('success', 'Subject Added', 'Successfully added the subject.');
     }
 
     onClose();

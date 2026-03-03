@@ -85,7 +85,6 @@ const GrievanceManagement: React.FC = () => {
         priority: formData.priority,
         status: 'pending'
       });
-      showToast('success', 'Grievance Submitted', 'Your grievance has been successfully submitted.');
       setFormData({ title: '', description: '', priority: 'medium' });
       setShowForm(false);
     }

@@ -16,10 +16,10 @@ const UserFeedback: React.FC = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const categories = [
-        { id: 'suggestion', label: 'Suggestion', icon: Lightbulb, color: 'text-blue-500 bg-blue-50 dark:bg-blue-900/20' },
-        { id: 'bug', label: 'Bug Report', icon: Bug, color: 'text-red-500 bg-red-50 dark:bg-red-900/20' },
-        { id: 'question', label: 'Question', icon: HelpCircle, color: 'text-yellow-500 bg-yellow-50 dark:bg-yellow-900/20' },
-        { id: 'compliment', label: 'Compliment', icon: MessageCircle, color: 'text-green-500 bg-green-50 dark:bg-green-900/20' }
+        { id: 'suggestion', label: 'Suggestion', icon: Lightbulb, color: 'text-blue-700 dark:text-blue-50 bg-blue-50 dark:bg-blue-900/60 border-blue-200 dark:border-blue-500/60' },
+        { id: 'bug', label: 'Bug Report', icon: Bug, color: 'text-red-700 dark:text-red-50 bg-red-50 dark:bg-red-900/60 border-red-200 dark:border-red-500/60' },
+        { id: 'question', label: 'Question', icon: HelpCircle, color: 'text-amber-700 dark:text-amber-50 bg-amber-50 dark:bg-amber-900/60 border-amber-200 dark:border-amber-500/60' },
+        { id: 'compliment', label: 'Compliment', icon: MessageCircle, color: 'text-emerald-700 dark:text-emerald-50 bg-emerald-50 dark:bg-emerald-900/60 border-emerald-200 dark:border-emerald-500/60' }
     ];
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -106,14 +106,14 @@ const UserFeedback: React.FC = () => {
                                                 type="button"
                                                 onClick={() => setFormData({ ...formData, category: cat.id })}
                                                 className={`flex flex-col items-center justify-center p-3 rounded-xl border-2 transition-all ${formData.category === cat.id
-                                                        ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20'
-                                                        : 'border-transparent bg-gray-50 dark:bg-gray-700/50 hover:bg-gray-100 dark:hover:bg-gray-700'
+                                                        ? 'border-primary-500 bg-primary-50 dark:bg-primary-800/70 dark:border-primary-300/80'
+                                                        : 'border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/70 hover:bg-gray-100 dark:hover:bg-gray-800'
                                                     }`}
                                             >
-                                                <div className={`p-2 rounded-lg mb-2 ${cat.color}`}>
+                                                <div className={`p-2 rounded-lg mb-2 border ${cat.color}`}>
                                                     <Icon className="h-5 w-5" />
                                                 </div>
-                                                <span className="text-xs font-medium text-gray-700 dark:text-gray-300">{cat.label}</span>
+                                                <span className="text-xs font-medium text-gray-700 dark:text-white">{cat.label}</span>
                                             </button>
                                         );
                                     })}

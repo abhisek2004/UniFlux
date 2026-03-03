@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { User, Student, Teacher, Subject, AttendanceRecord, Marks, Grievance, Notice } from '../types';
+import { useToast } from './ToastContext';
 
 interface AppContextType {
   // Auth
@@ -80,7 +81,32 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [darkMode, setDarkMode] = useState(false);
   const [socket, setSocket] = useState<Socket | null>(null);
 
+  const { showToast } = useToast();
   const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
+
+  const getToken = () => {
+    const token = localStorage.getItem('campuscore_token');
+    if (!token) {
+      showToast('error', 'Session expired', 'Please log in again to continue.');
+    }
+    return token;
+  };
+
+  const extractErrorMessage = async (response: Response) => {
+    try {
+      const data = await response.json();
+      if (typeof data === 'string') return data;
+      return data?.message || data?.error || 'Please try again later.';
+    } catch {
+      return response.statusText || 'Please try again later.';
+    }
+  };
+
+  const handleNetworkError = (error: unknown, title: string) => {
+    console.error(title, error);
+    const description = error instanceof Error ? error.message : 'Please try again later.';
+    showToast('error', title, description);
+  };
 
   // 🔐 RBAC derived values
   const isAuthenticated = !!currentUser;
@@ -127,10 +153,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         setCurrentUser(data);
         localStorage.setItem('campuscore_user', JSON.stringify(data));
         localStorage.setItem('campuscore_token', data.token);
+        showToast('success', 'Welcome back', `Logged in as ${data.role || 'user'}`);
         return true;
       }
+
+      const message = data?.message || 'Invalid email or password.';
+      showToast('error', 'Login failed', message);
       return false;
-    } catch {
+    } catch (error) {
+      handleNetworkError(error, 'Login failed');
       return false;
     }
   };
@@ -141,6 +172,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     localStorage.removeItem('campuscore_token');
     if (socket) socket.disconnect();
     setSocket(null);
+    showToast('info', 'Logged out', 'You have been signed out safely.');
   };
 
   const register = async (userData: any): Promise<boolean> => {
@@ -157,348 +189,412 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         setCurrentUser(data);
         localStorage.setItem('campuscore_user', JSON.stringify(data));
         localStorage.setItem('campuscore_token', data.token);
+        showToast('success', 'Registration complete', 'Account created successfully.');
         return true;
       }
+
+      const message = data?.message || 'Unable to register with the provided details.';
+      showToast('error', 'Registration failed', message);
       return false;
-    } catch {
+    } catch (error) {
+      handleNetworkError(error, 'Registration failed');
       return false;
     }
   };
   const addStudent = async (student: Omit<Student, 'id'>) => {
+    const token = getToken();
+    if (!token) return;
+
     try {
-      const token = localStorage.getItem('campuscore_token');
-      if (!token) return;
-      
       const response = await fetch(`${API_BASE_URL}/students`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(student),
       });
 
-      if (response.ok) {
-        const newStudent = await response.json();
-        setStudents(prev => [...prev, newStudent]);
+      if (!response.ok) {
+        const message = await extractErrorMessage(response);
+        showToast('error', 'Unable to add student', message);
+        return;
       }
+
+      const newStudent = await response.json();
+      setStudents((prev) => [...prev, newStudent]);
+      showToast('success', 'Student added', `${newStudent.name} has been added successfully.`);
     } catch (error) {
-      console.error('Error adding student:', error);
+      handleNetworkError(error, 'Unable to add student');
     }
   };
 
   const updateStudent = async (id: string, updates: Partial<Student>) => {
+    const token = getToken();
+    if (!token) return;
+
     try {
-      const token = localStorage.getItem('campuscore_token');
-      if (!token) return;
-      
       const response = await fetch(`${API_BASE_URL}/students/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(updates),
       });
 
-      if (response.ok) {
-        const updatedStudent = await response.json();
-        setStudents(prev => prev.map(s => s.id === id ? updatedStudent : s));
+      if (!response.ok) {
+        const message = await extractErrorMessage(response);
+        showToast('error', 'Unable to update student', message);
+        return;
       }
+
+      const updatedStudent = await response.json();
+      setStudents((prev) => prev.map((s) => (s.id === id ? updatedStudent : s)));
+      showToast('success', 'Student updated', `${updatedStudent.name} was updated successfully.`);
     } catch (error) {
-      console.error('Error updating student:', error);
+      handleNetworkError(error, 'Unable to update student');
     }
   };
 
   const deleteStudent = async (id: string) => {
+    const token = getToken();
+    if (!token) return;
+
     try {
-      const token = localStorage.getItem('campuscore_token');
-      if (!token) return;
-      
       const response = await fetch(`${API_BASE_URL}/students/${id}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
 
-      if (response.ok) {
-        setStudents(prev => prev.filter(s => s.id !== id));
+      if (!response.ok) {
+        const message = await extractErrorMessage(response);
+        showToast('error', 'Unable to delete student', message);
+        return;
       }
+
+      setStudents((prev) => prev.filter((s) => s.id !== id));
+      showToast('success', 'Student deleted', 'Student record has been removed.');
     } catch (error) {
-      console.error('Error deleting student:', error);
+      handleNetworkError(error, 'Unable to delete student');
     }
   };
 
   const addTeacher = async (teacher: Omit<Teacher, 'id'>) => {
+    const token = getToken();
+    if (!token) return;
+
     try {
-      const token = localStorage.getItem('campuscore_token');
-      if (!token) return;
-      
       const response = await fetch(`${API_BASE_URL}/teachers`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(teacher),
       });
 
-      if (response.ok) {
-        const newTeacher = await response.json();
-        setTeachers(prev => [...prev, newTeacher]);
+      if (!response.ok) {
+        const message = await extractErrorMessage(response);
+        showToast('error', 'Unable to add teacher', message);
+        return;
       }
+
+      const newTeacher = await response.json();
+      setTeachers((prev) => [...prev, newTeacher]);
+      showToast('success', 'Teacher added', `${newTeacher.name} has been added successfully.`);
     } catch (error) {
-      console.error('Error adding teacher:', error);
+      handleNetworkError(error, 'Unable to add teacher');
     }
   };
 
   const updateTeacher = async (id: string, updates: Partial<Teacher>) => {
+    const token = getToken();
+    if (!token) return;
+
     try {
-      const token = localStorage.getItem('campuscore_token');
-      if (!token) return;
-      
       const response = await fetch(`${API_BASE_URL}/teachers/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(updates),
       });
 
-      if (response.ok) {
-        const updatedTeacher = await response.json();
-        setTeachers(prev => prev.map(t => t.id === id ? updatedTeacher : t));
+      if (!response.ok) {
+        const message = await extractErrorMessage(response);
+        showToast('error', 'Unable to update teacher', message);
+        return;
       }
+
+      const updatedTeacher = await response.json();
+      setTeachers((prev) => prev.map((t) => (t.id === id ? updatedTeacher : t)));
+      showToast('success', 'Teacher updated', `${updatedTeacher.name} was updated successfully.`);
     } catch (error) {
-      console.error('Error updating teacher:', error);
+      handleNetworkError(error, 'Unable to update teacher');
     }
   };
 
   const deleteTeacher = async (id: string) => {
+    const token = getToken();
+    if (!token) return;
+
     try {
-      const token = localStorage.getItem('campuscore_token');
-      if (!token) return;
-      
       const response = await fetch(`${API_BASE_URL}/teachers/${id}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
 
-      if (response.ok) {
-        setTeachers(prev => prev.filter(t => t.id !== id));
+      if (!response.ok) {
+        const message = await extractErrorMessage(response);
+        showToast('error', 'Unable to delete teacher', message);
+        return;
       }
+
+      setTeachers((prev) => prev.filter((t) => t.id !== id));
+      showToast('success', 'Teacher deleted', 'Teacher record has been removed.');
     } catch (error) {
-      console.error('Error deleting teacher:', error);
+      handleNetworkError(error, 'Unable to delete teacher');
     }
   };
 
   const addSubject = async (subject: Omit<Subject, 'id'>) => {
+    const token = getToken();
+    if (!token) return;
+
     try {
-      const token = localStorage.getItem('campuscore_token');
-      if (!token) return;
-      
       const response = await fetch(`${API_BASE_URL}/subjects`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(subject),
       });
 
-      if (response.ok) {
-        const newSubject = await response.json();
-        setSubjects(prev => [...prev, newSubject]);
+      if (!response.ok) {
+        const message = await extractErrorMessage(response);
+        showToast('error', 'Unable to add subject', message);
+        return;
       }
+
+      const newSubject = await response.json();
+      setSubjects((prev) => [...prev, newSubject]);
+      showToast('success', 'Subject added', `${newSubject.name} has been added successfully.`);
     } catch (error) {
-      console.error('Error adding subject:', error);
+      handleNetworkError(error, 'Unable to add subject');
     }
   };
 
   const updateSubject = async (id: string, updates: Partial<Subject>) => {
+    const token = getToken();
+    if (!token) return;
+
     try {
-      const token = localStorage.getItem('campuscore_token');
-      if (!token) return;
-      
       const response = await fetch(`${API_BASE_URL}/subjects/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(updates),
       });
 
-      if (response.ok) {
-        const updatedSubject = await response.json();
-        setSubjects(prev => prev.map(s => s.id === id ? updatedSubject : s));
+      if (!response.ok) {
+        const message = await extractErrorMessage(response);
+        showToast('error', 'Unable to update subject', message);
+        return;
       }
+
+      const updatedSubject = await response.json();
+      setSubjects((prev) => prev.map((s) => (s.id === id ? updatedSubject : s)));
+      showToast('success', 'Subject updated', `${updatedSubject.name} was updated successfully.`);
     } catch (error) {
-      console.error('Error updating subject:', error);
+      handleNetworkError(error, 'Unable to update subject');
     }
   };
 
   const deleteSubject = async (id: string) => {
+    const token = getToken();
+    if (!token) return;
+
     try {
-      const token = localStorage.getItem('campuscore_token');
-      if (!token) return;
-      
       const response = await fetch(`${API_BASE_URL}/subjects/${id}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
 
-      if (response.ok) {
-        setSubjects(prev => prev.filter(s => s.id !== id));
+      if (!response.ok) {
+        const message = await extractErrorMessage(response);
+        showToast('error', 'Unable to delete subject', message);
+        return;
       }
+
+      setSubjects((prev) => prev.filter((s) => s.id !== id));
+      showToast('success', 'Subject deleted', 'Subject record has been removed.');
     } catch (error) {
-      console.error('Error deleting subject:', error);
+      handleNetworkError(error, 'Unable to delete subject');
     }
   };
 
   const markAttendance = async (studentId: string, subjectId: string, date: string, status: 'present' | 'absent') => {
+    const token = getToken();
+    if (!token) return;
+
     try {
-      const token = localStorage.getItem('campuscore_token');
-      if (!token) return;
-      
-      // Find the subject to get the teacherId
-      const subject = subjects.find(s => s.id === subjectId);
-      
+      const subject = subjects.find((s) => s.id === subjectId);
+
       const response = await fetch(`${API_BASE_URL}/attendance`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           studentId,
           subjectId,
           date,
           status,
-          teacherId: subject?.teacherId || ''
+          teacherId: subject?.teacherId || '',
         }),
       });
 
-      if (response.ok) {
-        const newAttendance = await response.json();
-        setAttendance(prev => [...prev, newAttendance]);
+      if (!response.ok) {
+        const message = await extractErrorMessage(response);
+        showToast('error', 'Unable to mark attendance', message);
+        return;
       }
+
+      const newAttendance = await response.json();
+      setAttendance((prev) => [...prev, newAttendance]);
+      showToast('success', 'Attendance saved', 'Attendance has been recorded successfully.');
     } catch (error) {
-      console.error('Error marking attendance:', error);
+      handleNetworkError(error, 'Unable to mark attendance');
     }
   };
 
   const updateMarks = async (studentId: string, subjectId: string, internal: number, external: number) => {
-    try {
-      const token = localStorage.getItem('campuscore_token');
-      if (!token) return;
-      
-      // Calculate total and grade
-      const total = internal + external;
-      let grade = 'F';
-      if (total >= 90) grade = 'A+'
-      else if (total >= 80) grade = 'A'
-      else if (total >= 70) grade = 'B+'
-      else if (total >= 60) grade = 'B'
-      else if (total >= 50) grade = 'C'
-      else if (total >= 40) grade = 'D'
+    const token = getToken();
+    if (!token) return;
 
+    try {
       const response = await fetch(`${API_BASE_URL}/marks`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           studentId,
           subjectId,
           internalMarks: internal,
           externalMarks: external,
-          semester: 5
+          semester: 5,
         }),
       });
 
-      if (response.ok) {
-        const newMarks = await response.json();
-        setMarks(prev => [...prev, newMarks]);
+      if (!response.ok) {
+        const message = await extractErrorMessage(response);
+        showToast('error', 'Unable to update marks', message);
+        return;
       }
+
+      const newMarks = await response.json();
+      setMarks((prev) => [...prev, newMarks]);
+      showToast('success', 'Marks updated', 'Marks have been updated successfully.');
     } catch (error) {
-      console.error('Error updating marks:', error);
+      handleNetworkError(error, 'Unable to update marks');
     }
   };
 
   const addGrievance = async (grievance: Omit<Grievance, 'id' | 'createdAt'>) => {
+    const token = getToken();
+    if (!token) return;
+
     try {
-      const token = localStorage.getItem('campuscore_token');
-      if (!token) return;
-      
       const response = await fetch(`${API_BASE_URL}/grievances`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(grievance),
       });
 
-      if (response.ok) {
-        const newGrievance = await response.json();
-        setGrievances(prev => [...prev, newGrievance]);
+      if (!response.ok) {
+        const message = await extractErrorMessage(response);
+        showToast('error', 'Unable to submit grievance', message);
+        return;
       }
+
+      const newGrievance = await response.json();
+      setGrievances((prev) => [...prev, newGrievance]);
+      showToast('success', 'Grievance submitted', 'Your grievance has been recorded.');
     } catch (error) {
-      console.error('Error adding grievance:', error);
+      handleNetworkError(error, 'Unable to submit grievance');
     }
   };
 
   const updateGrievance = async (id: string, updates: Partial<Grievance>) => {
+    const token = getToken();
+    if (!token) return;
+
     try {
-      const token = localStorage.getItem('campuscore_token');
-      if (!token) return;
-      
       const response = await fetch(`${API_BASE_URL}/grievances/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(updates),
       });
 
-      if (response.ok) {
-        const updatedGrievance = await response.json();
-        setGrievances(prev => prev.map(g => g.id === id ? updatedGrievance : g));
+      if (!response.ok) {
+        const message = await extractErrorMessage(response);
+        showToast('error', 'Unable to update grievance', message);
+        return;
       }
+
+      const updatedGrievance = await response.json();
+      setGrievances((prev) => prev.map((g) => (g.id === id ? updatedGrievance : g)));
+      showToast('success', 'Grievance updated', 'Grievance status has been updated.');
     } catch (error) {
-      console.error('Error updating grievance:', error);
+      handleNetworkError(error, 'Unable to update grievance');
     }
   };
 
   const addNotice = async (notice: Omit<Notice, 'id' | 'createdAt'>) => {
+    const token = getToken();
+    if (!token) return;
+
     try {
-      const token = localStorage.getItem('campuscore_token');
-      if (!token) return;
-      
       const response = await fetch(`${API_BASE_URL}/notices`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(notice),
       });
 
-      if (response.ok) {
-        const newNotice = await response.json();
-        setNotices(prev => [...prev, newNotice]);
+      if (!response.ok) {
+        const message = await extractErrorMessage(response);
+        showToast('error', 'Unable to add notice', message);
+        return;
       }
+
+      const newNotice = await response.json();
+      setNotices((prev) => [...prev, newNotice]);
+      showToast('success', 'Notice added', 'The notice has been published.');
     } catch (error) {
-      console.error('Error adding notice:', error);
+      handleNetworkError(error, 'Unable to add notice');
     }
   };
 
