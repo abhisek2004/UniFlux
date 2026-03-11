@@ -88,6 +88,30 @@ const MainApp: React.FC = () => {
     setSidebarOpen(false);
   }, [activeTab]);
 
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    const mediaQuery = window.matchMedia('(max-width: 1024px)');
+    const handleChange = () => {
+      setSidebarCollapsed(mediaQuery.matches);
+      if (mediaQuery.matches) {
+        setSidebarOpen(false);
+      }
+    };
+
+    handleChange();
+
+    if (typeof mediaQuery.addEventListener === 'function') {
+      mediaQuery.addEventListener('change', handleChange);
+      return () => mediaQuery.removeEventListener('change', handleChange);
+    }
+
+    mediaQuery.addListener(handleChange);
+    return () => mediaQuery.removeListener(handleChange);
+  }, []);
+
   const renderContent = () => {
     switch (activeTab) {
       case 'dashboard':
@@ -156,6 +180,7 @@ const MainApp: React.FC = () => {
         isOpen={sidebarOpen}
         isCollapsed={sidebarCollapsed}
         onClose={() => setSidebarOpen(false)}
+        onToggleCollapse={() => setSidebarCollapsed((prev) => !prev)}
       />
 
       {sidebarOpen && (
@@ -189,6 +214,30 @@ const MainAppWithPage: React.FC<{ page: string }> = ({ page }) => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    const mediaQuery = window.matchMedia('(max-width: 1024px)');
+    const handleChange = () => {
+      setSidebarCollapsed(mediaQuery.matches);
+      if (mediaQuery.matches) {
+        setSidebarOpen(false);
+      }
+    };
+
+    handleChange();
+
+    if (typeof mediaQuery.addEventListener === 'function') {
+      mediaQuery.addEventListener('change', handleChange);
+      return () => mediaQuery.removeEventListener('change', handleChange);
+    }
+
+    mediaQuery.addListener(handleChange);
+    return () => mediaQuery.removeListener(handleChange);
+  }, []);
+
   const renderContent = () => {
     switch (page) {
       case 'academic-calendar':
@@ -220,6 +269,7 @@ const MainAppWithPage: React.FC<{ page: string }> = ({ page }) => {
     isCollapsed={sidebarCollapsed}
     onNavigate={(route) => navigate(route)}
     onClose={() => setSidebarOpen(false)}
+    onToggleCollapse={() => setSidebarCollapsed((prev) => !prev)}
   />
 
       {sidebarOpen && (
@@ -243,11 +293,7 @@ const MainAppWithPage: React.FC<{ page: string }> = ({ page }) => {
           <Footer />
         </main>
       </div>
-      <Footer />
-    </main>
-  </div>
-</div>
-
+    </div>
   );
 };
 
