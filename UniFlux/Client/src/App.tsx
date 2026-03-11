@@ -95,10 +95,14 @@ const MainApp: React.FC = () => {
 
     const mediaQuery = window.matchMedia('(max-width: 1024px)');
     const handleChange = () => {
-      setSidebarCollapsed(mediaQuery.matches);
+      // On mobile, keep sidebar expanded when opened so menu items stay visible
       if (mediaQuery.matches) {
+        setSidebarCollapsed(false);
         setSidebarOpen(false);
+        return;
       }
+      // On desktop, default to expanded; users can manually collapse
+      setSidebarCollapsed(false);
     };
 
     handleChange();
@@ -185,7 +189,7 @@ const MainApp: React.FC = () => {
 
       {sidebarOpen && (
         <div
-          className="fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-40 lg:hidden transition-opacity"
+          className="fixed inset-0 bg-gray-900/40 backdrop-blur-sm z-30 lg:hidden transition-opacity"
           onClick={() => setSidebarOpen(false)}
         />
       )}
@@ -221,10 +225,12 @@ const MainAppWithPage: React.FC<{ page: string }> = ({ page }) => {
 
     const mediaQuery = window.matchMedia('(max-width: 1024px)');
     const handleChange = () => {
-      setSidebarCollapsed(mediaQuery.matches);
       if (mediaQuery.matches) {
+        setSidebarCollapsed(false);
         setSidebarOpen(false);
+        return;
       }
+      setSidebarCollapsed(false);
     };
 
     handleChange();
@@ -274,7 +280,7 @@ const MainAppWithPage: React.FC<{ page: string }> = ({ page }) => {
 
       {sidebarOpen && (
         <div
-          className="fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-40 lg:hidden"
+          className="fixed inset-0 bg-gray-900/40 backdrop-blur-sm z-30 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
