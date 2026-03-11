@@ -8,11 +8,10 @@ import './index.css';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <AppProvider>
-      <ToastProvider>
+    <ToastProvider>
+      <AppProvider>
         <App />
-      </ToastProvider>
-    </AppProvider>
-
+      </AppProvider>
+    </ToastProvider>
   </React.StrictMode>,
 );
